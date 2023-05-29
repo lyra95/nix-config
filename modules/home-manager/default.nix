@@ -6,6 +6,7 @@
   home.stateVersion = "22.11";
   home.packages = with pkgs; [
     curl
+    most
   ];
 
   # home.file.".inputrc".source = ./dotfiles/inputrc;
@@ -43,4 +44,10 @@
   };
   
   programs.fish.enable = true;
+  programs.fish.functions = {
+    man = {
+      body = "command man $argv | most";
+      description =  "Display colored man pages";
+    };
+  };
 }
