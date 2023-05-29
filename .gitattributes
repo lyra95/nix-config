@@ -1,0 +1,4 @@
+# result/** 밑의 파일들은
+# 내가 직접 작성한 파일이 아니고
+# nix build 할 때 생성되서 binary 취급
+result/** binary
