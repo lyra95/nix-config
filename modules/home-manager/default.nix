@@ -32,6 +32,15 @@
     userName = "jo";
     userEmail = "95hyouka@gmail.com";
   };
+
+  programs.neovim = {
+    enable = true;
+    coc.enable = true;
+    defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
+    vimdiffAlias = true;
+  };
   
   programs.fish.enable = true;
 }
