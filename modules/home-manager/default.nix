@@ -7,6 +7,8 @@
   home.packages = with pkgs; [
     curl
     most
+    fd # find 대체제
+    ripgrep # grep 대체제
   ];
 
   # home.file.".inputrc".source = ./dotfiles/inputrc;
@@ -26,6 +28,7 @@
   programs.starship.enable = true;
   programs.starship.enableFishIntegration = true;
   
+  # ls 대체제 https://the.exa.website/
   programs.exa.enable = true;
   
   programs.git = {
