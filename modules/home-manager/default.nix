@@ -9,6 +9,7 @@
     most
     fd # find 대체제
     ripgrep # grep 대체제
+    gnumake
   ];
 
   # home.file.".inputrc".source = ./dotfiles/inputrc;
@@ -52,5 +53,11 @@
       body = "command man $argv | most";
       description =  "Display colored man pages";
     };
+    open = {
+      body = "explorer.exe $argv";
+      description = "Open in a File Explorer, like a MacOS";
+    };
   };
+  # WSL2 Ubuntu에서 이게 먼저 로드가 안되니까 nix 커맨드를 못 찾음
+  programs.fish.shellInit = "source $HOME/.nix-profile/etc/profile.d/nix.fish\nsource $HOME/.nix-profile/etc/profile.d/nix-daemon.fish";
 }

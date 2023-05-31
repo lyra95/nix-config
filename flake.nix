@@ -39,5 +39,14 @@
         ];
       };
     };
+
+    homeConfigurations = {
+      WSL2Ubuntu = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        modules = [
+          (import ./modules/home-manager { username = "jo"; homeDirectory = "/home/jo"; })
+        ];
+      };
+    };
   };
 }
