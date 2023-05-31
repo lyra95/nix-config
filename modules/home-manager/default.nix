@@ -2,7 +2,7 @@
 { username, homeDirectory }: { pkgs, ... }: {
   home.username = username;
   home.homeDirectory = homeDirectory;
-  
+
   home.stateVersion = "22.11";
   home.packages = with pkgs; [
     curl
@@ -13,7 +13,7 @@
   ];
 
   # home.file.".inputrc".source = ./dotfiles/inputrc;
-  
+
   # home.sessionVariables = {
   #   PAGER = "less";
   #   CLICLOLOR = 1;
@@ -22,16 +22,16 @@
 
   programs.bat.enable = true;
   programs.bat.config.theme = "TwoDark";
-  
+
   programs.fzf.enable = true;
   programs.fzf.enableFishIntegration = true;
-  
+
   programs.starship.enable = true;
   programs.starship.enableFishIntegration = true;
-  
+
   # ls 대체제 https://the.exa.website/
   programs.exa.enable = true;
-  
+
   programs.git = {
     enable = true;
     userName = "jo";
@@ -46,18 +46,29 @@
     vimAlias = true;
     vimdiffAlias = true;
   };
-  
+
   programs.fish.enable = true;
-  programs.fish.functions = {
-    man = {
-      body = "command man $argv | most";
-      description =  "Display colored man pages";
-    };
-    open = {
-      body = "explorer.exe $argv";
-      description = "Open in a File Explorer, like a MacOS";
-    };
-  };
+  programs.fish.functions =
+    let
+      commonFunc = {
+        man = {
+          body = "command man $argv | most";
+          description = "Display colored man pages";
+        };
+      };
+      wslFunc = {
+        open = {
+          body = "explorer.exe $argv";
+          description = "Open in a File Explorer, like a MacOS";
+        };
+      };
+    in
+    if pkgs.stdenv.isDarwin then
+      commonFunc
+    else
+      commonFunc // wslFunc;
   # WSL2 Ubuntu에서 이게 먼저 로드가 안되니까 nix 커맨드를 못 찾음
-  programs.fish.shellInit = "source $HOME/.nix-profile/etc/profile.d/nix.fish\nsource $HOME/.nix-profile/etc/profile.d/nix-daemon.fish";
+  programs.fish.shellInit =
+    if pkgs.stdenv.isDarwin then ""
+    else "source $HOME/.nix-profile/etc/profile.d/nix.fish\nsource $HOME/.nix-profile/etc/profile.d/nix-daemon.fish";
 }

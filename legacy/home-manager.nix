@@ -4,32 +4,32 @@
 
 let
   python = pkgs.python39;
-  nodejs = pkgs.nodejs-16_x; 
+  nodejs = pkgs.nodejs-16_x;
 in
 {
-# Home Manager needs a bit of information about you and the
-# paths it should manage.
+  # Home Manager needs a bit of information about you and the
+  # paths it should manage.
   home.username = "jo";
   home.homeDirectory = "/Users/jo";
 
-# This value determines the Home Manager release that your
-# configuration is compatible with. This helps avoid breakage
-# when a new Home Manager release introduces backwards
-# incompatible changes.
-#
-# You can update Home Manager without changing this value. See
-# the Home Manager release notes for a list of state version
-# changes in each release.
+  # This value determines the Home Manager release that your
+  # configuration is compatible with. This helps avoid breakage
+  # when a new Home Manager release introduces backwards
+  # incompatible changes.
+  #
+  # You can update Home Manager without changing this value. See
+  # the Home Manager release notes for a list of state version
+  # changes in each release.
   home.stateVersion = "22.11";
 
-# Let Home Manager install and manage itself.
+  # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
   home.packages = [ python nodejs ];
 
   # nodejs 18 is unable to be installed
   nixpkgs.overlays = [ (self: super: { nodejs = nodejs; }) ];
 
-# begin fish
+  # begin fish
   programs.zsh = {
     enable = true;
     shellAliases = {
@@ -39,21 +39,21 @@ in
       home-edit = "nvim ~/.config/nixpkgs/home.nix";
     };
     initExtra = ''
-    PATH=$PATH:~/flutter/bin:/Users/jo/Library/Android/sdk/tools/bin
-    PATH=$PATH:/usr/local/bin:~/.local/share/bin
-    source <(kubectl completion zsh)
+      PATH=$PATH:~/flutter/bin:/Users/jo/Library/Android/sdk/tools/bin
+      PATH=$PATH:/usr/local/bin:~/.local/share/bin
+      source <(kubectl completion zsh)
     '';
     zplug = {
       enable = true;
       plugins = [
-      { name = "plugins/git"; tags = [ from:oh-my-zsh ]; }
-      { name = "junegunn/fzf"; tags = [ from:gh-r as:command use:'*darwin*arm64*' ]; }
-      { name = "themes/robbyrussell"; tags = [ from:oh-my-zsh ]; }
-      { name = "greymd/docker-zsh-completion"; }
+        { name = "plugins/git"; tags = [ from:oh-my-zsh ]; }
+        { name = "junegunn/fzf"; tags = [ from:gh-r as:command use:'*darwin*arm64*' ]; }
+        { name = "themes/robbyrussell"; tags = [ from:oh-my-zsh ]; }
+        { name = "greymd/docker-zsh-completion"; }
       ];
     };
   };
-# end fish
+  # end fish
   programs.git = {
     enable = true;
     userName = "Jo";
@@ -86,7 +86,7 @@ in
       ig = "!nvim \"$(git rev-parse --show-toplevel)/.gitignore\"";
     };
   };
-  programs.fzf.enable = true;	
+  programs.fzf.enable = true;
   programs.tmux.enable = true;
   programs.gpg.enable = true;
   programs.neovim = {
@@ -122,6 +122,6 @@ in
       nnoremap <C-n> :NERDTree<CR>
       nnoremap <C-t> :NERDTreeToggle<CR>
       nnoremap <C-f> :NERDTreeFind<CR>
-      '';
+    '';
   };
 }
