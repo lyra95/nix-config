@@ -10,6 +10,11 @@
     fd # find 대체제
     ripgrep # grep 대체제
     gnumake
+    jq
+    yq-go
+    kubectl
+    kubernetes-helm
+    awscli2
   ];
 
   # home.file.".inputrc".source = ./dotfiles/inputrc;
@@ -60,6 +65,10 @@
         open = {
           body = "explorer.exe $argv";
           description = "Open in a File Explorer, like a MacOS";
+        };
+        fit = {
+          body = "git.exe $argv";
+          description = "Faster git";
         };
       };
     in

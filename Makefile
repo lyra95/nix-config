@@ -7,12 +7,16 @@ darwin-build:
 	nix build .\#darwinConfigurations.jos-MacBook-Air.system
 
 .Phony: wsl-switch
-wsl-switch:
+wsl-switch: wsl-build
 	./result/bin/home-manager-generation switch --flake .
 
 .Phony: wsl-build
 wsl-build:
 	nix build --extra-experimental-features 'nix-command flakes' .\#homeConfigurations.WSL2Ubuntu.activationPackage
+
+.Phony: fmt
+fmt:
+	nix-shell -p nixpkgs-fmt --run 'nixpkgs-fmt .'
 
 .ONESHELL: gc
 .Phony: gc
