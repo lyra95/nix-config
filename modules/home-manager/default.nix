@@ -12,15 +12,18 @@
     gnumake
     jq
     yq-go
-    kubectl
+    kubectl # https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html eks kubeconfig 파일 생성 필요
     kubernetes-helm
+    kustomize
     awscli2
+    pulumi-bin
+    nodejs-18_x
   ];
 
   home.file.awsconfig.source = ./.aws/config;
-  # home.file.awsconfig.target = ".aws/config";
-
-  # home.file.".inputrc".source = ./dotfiles/inputrc;
+  home.file.awsconfig.target = ".aws/config";
+  # .aws/credentials 파일은 aws configure로 알아서 생성해야됨
+  # 아니면 개인용 vault라도 셋업해야되나
 
   # home.sessionVariables = {
   #   PAGER = "less";
@@ -63,15 +66,36 @@
           body = "command man $argv | most";
           description = "Display colored man pages";
         };
+        k = {
+          body = "kubectl $argv";
+        };
+        km = {
+          body = "kustomize $argv";
+        };
+        ll = {
+          body = "exa -al";
+        };
+        remove-cr = {
+          body = ''
+            set file $argv
+            set tempf $(mktemp)
+            cat "$file" > "$tempf"
+            tr -d '\r' < "$tempf" > "$file";
+          '';
+        };
       };
       wslFunc = {
         open = {
           body = "explorer.exe $argv";
           description = "Open in a File Explorer, like a MacOS";
         };
-        fit = {
+        wit = {
           body = "git.exe $argv";
-          description = "Faster git";
+          description = "windows git";
+        };
+        wode = {
+          body = "powershell.exe code $argv";
+          description = "windows vscode";
         };
       };
     in
