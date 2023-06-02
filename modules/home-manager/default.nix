@@ -17,6 +17,9 @@
     awscli2
   ];
 
+  home.file.awsconfig.source = ./.aws/config;
+  # home.file.awsconfig.target = ".aws/config";
+
   # home.file.".inputrc".source = ./dotfiles/inputrc;
 
   # home.sessionVariables = {
