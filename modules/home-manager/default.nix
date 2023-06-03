@@ -3,7 +3,7 @@
   home.username = username;
   home.homeDirectory = homeDirectory;
 
-  home.stateVersion = "22.11";
+  home.stateVersion = "23.05";
   home.packages = with pkgs; [
     curl
     most
@@ -17,7 +17,10 @@
     kustomize
     awscli2
     pulumi-bin
-    nodejs-18_x
+    nodejs
+    dotnet-sdk_7
+    python311Full
+    rustup
   ];
 
   home.file.awsconfig.source = ./.aws/config;
@@ -73,7 +76,7 @@
           body = "kustomize $argv";
         };
         ll = {
-          body = "exa -al";
+          body = "exa -al $argv";
         };
         remove-cr = {
           body = ''
