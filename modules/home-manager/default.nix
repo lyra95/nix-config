@@ -21,6 +21,11 @@
     dotnet-sdk_7
     python311Full
     rustup
+    neovim
+    gcc
+    lazygit
+    bottom
+    gdu
   ];
 
   home.file.awsconfig.source = ./.aws/config;
@@ -28,11 +33,11 @@
   # .aws/credentials 파일은 aws configure로 알아서 생성해야됨
   # 아니면 개인용 vault라도 셋업해야되나
 
-  # home.sessionVariables = {
-  #   PAGER = "less";
-  #   CLICLOLOR = 1;
-  #   EDITOR = "nvim";
-  # };
+  home.sessionVariables = {
+    #  PAGER = "less";
+    #  CLICLOLOR = 1;
+    EDITOR = "nvim";
+  };
 
   programs.bat.enable = true;
   programs.bat.config.theme = "TwoDark";
@@ -52,13 +57,14 @@
     userEmail = "95hyouka@gmail.com";
   };
 
-  programs.neovim = {
-    enable = true;
-    coc.enable = true;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
-    vimdiffAlias = true;
+  home.file.astronvim = {
+    source = pkgs.fetchFromGitHub {
+      owner = "AstroNvim";
+      repo = "AstroNvim";
+      rev = "master";
+      sha256 = "0fd0s38i153rmidzmi98qgljr919y8i6dz0k1a3g4bmsywgpkkgf";
+    };
+    target = ".config/nvim";
   };
 
   programs.fish.enable = true;
