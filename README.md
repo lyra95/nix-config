@@ -24,4 +24,4 @@ system: "aarch64-darwin", multi-user?: yes, version: nix-env (Nix) 2.13.2, chann
  - [ ] : (chore) username, pc name, system에 하드코드된거 `let... in...` expression으로 변경
  - [ ] : neovim 플러그인, LSP 설치한 것들도 nix로 관리하기
  - [ ] : lint 및 formatter 적용
- - [ ] : git config들 정리 
+ - [ ] : git config들 정리, gpg sign, ssh pk 

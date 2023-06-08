@@ -71,6 +71,14 @@
     enable = true;
     userName = "jo";
     userEmail = "95hyouka@gmail.com";
+    aliases = {
+      oops = "commit --amend -a --no-edit";
+      gc-all = "gc -q --prune --aggressive --keep-largest-pack --force";
+    };
+    delta.enable = true;
+    extraConfig = {
+      init.defaultBranch = "main";
+    };
   };
 
   home.file.astronvim = {
