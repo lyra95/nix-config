@@ -6,6 +6,7 @@
   home.stateVersion = "23.05";
   home.packages = with pkgs; [
     curl
+    unzip
     most
     fd # find 대체제
     ripgrep # grep 대체제
