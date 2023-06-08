@@ -22,9 +22,6 @@ system: "aarch64-darwin", multi-user?: yes, version: nix-env (Nix) 2.13.2, chann
 # TODO
 
  - [ ] : (chore) username, pc name, system에 하드코드된거 `let... in...` expression으로 변경
- - [ ] : neovim 설정 변경
- - [ ] : 각종 필요한 패키지들 더 설치
-   - awscli, pulumi
-   - kubectl, helm, kustomize, docker, ...
-   - dotnet, rust, node, python, haskell, ...
+ - [ ] : neovim 플러그인, LSP 설치한 것들도 nix로 관리하기
  - [ ] : lint 및 formatter 적용
+ - [ ] : git config들 정리 

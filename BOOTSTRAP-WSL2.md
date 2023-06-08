@@ -30,3 +30,10 @@ generateResolvConf = false
 ## 6. fish를 login shell로 지정
 
 home-manager로 설정 가능한 부분이 아니라서, chsh로 바꾸려했는데 /etc/shell에 fish가 없어서 `sudo usermod --shell /home/jo/.nix-profile/bin/fish jo`로 함
+
+## 7. windows에 있는 도커 엔진과 unix socket으로 연결하기
+
+wsl default dist로 설정해줘야함
+
+https://docs.docker.com/desktop/windows/wsl/#enabling-docker-support-in-wsl-2-distros
+

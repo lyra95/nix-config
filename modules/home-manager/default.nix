@@ -4,30 +4,45 @@
   home.homeDirectory = homeDirectory;
 
   home.stateVersion = "23.05";
-  home.packages = with pkgs; [
-    curl
-    unzip
-    most
-    fd # find 대체제
-    ripgrep # grep 대체제
-    gnumake
-    jq
-    yq-go
-    kubectl # https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html eks kubeconfig 파일 생성 필요
-    kubernetes-helm
-    kustomize
-    awscli2
-    pulumi-bin
-    nodejs
-    dotnet-sdk_7
-    python311Full
-    rustup
-    neovim
-    gcc
-    lazygit
-    bottom
-    gdu
-  ];
+  home.packages = with pkgs;
+    let
+      essentials =
+        [
+          curl
+          gnumake
+        ];
+      tool = [
+        jq
+        yq-go
+        most
+        fd # find 대체제
+        ripgrep # grep 대체제
+      ];
+      cloud = [
+        kubectl # https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html eks kubeconfig 파일 생성 필요
+        kubernetes-helm
+        kustomize
+        awscli2
+        pulumi-bin # infra as a code with TypeScript
+        docker-client # engine은 도커 데스크탑을 쓰므로 client만
+      ];
+      langs = [
+        nodejs
+        dotnet-sdk_7
+        python311Full
+        rustup
+      ];
+      editor = # neovim with AstroNvim dependencies
+        [
+          neovim
+          unzip
+          gcc
+          lazygit # gui git
+          bottom # cpu, mem usage gui
+          gdu # disk usage
+        ];
+    in
+    essentials ++ tool ++ cloud ++ langs ++ editor;
 
   home.file.awsconfig.source = ./.aws/config;
   home.file.awsconfig.target = ".aws/config";
