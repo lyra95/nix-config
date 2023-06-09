@@ -99,6 +99,10 @@
           body = "command man $argv | most";
           description = "Display colored man pages";
         };
+        kcomp = {
+          # shell init script에 넣어도 자동완성이 동작 안 해서 일단 이렇게라도
+          body = "kubectl completion fish | source";
+        };
         k = {
           body = "kubectl $argv";
         };
