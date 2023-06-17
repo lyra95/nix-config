@@ -41,8 +41,9 @@
           bottom # cpu, mem usage gui
           gdu # disk usage
         ];
+      others = [ zola ];
     in
-    essentials ++ tool ++ cloud ++ langs ++ editor;
+    essentials ++ tool ++ cloud ++ langs ++ editor ++ others;
 
   home.file.awsconfig.source = ./.aws/config;
   home.file.awsconfig.target = ".aws/config";
