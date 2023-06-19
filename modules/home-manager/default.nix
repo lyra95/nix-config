@@ -113,6 +113,9 @@
         ll = {
           body = "exa -al $argv";
         };
+        tree = {
+          body = "exa --tree $argv";
+        };
         remove-cr = {
           body = ''
             set file $argv
