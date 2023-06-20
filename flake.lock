@@ -1,5 +1,22 @@
 {
   "nodes": {
+    "astroNvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1687190500,
+        "narHash": "sha256-YZv8Z92axw3nhD68gG1iJ/PqL39mpuQoVWu18+rR3uA=",
+        "owner": "AstroNvim",
+        "repo": "AstroNvim",
+        "rev": "b6d70ee852e7df9ffbaa3d4a9a5cbdee575f3da1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AstroNvim",
+        "ref": "main",
+        "repo": "AstroNvim",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -59,6 +76,7 @@
     },
     "root": {
       "inputs": {
+        "astroNvim": "astroNvim",
         "darwin": "darwin",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs"

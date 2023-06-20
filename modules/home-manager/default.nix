@@ -1,5 +1,5 @@
 # https://mipmip.github.io/home-manager-option-search/ 에서 검색 가능
-{ username, homeDirectory }: { pkgs, ... }: {
+{ username, homeDirectory, astroNvim }: { pkgs, ... }: {
   home.username = username;
   home.homeDirectory = homeDirectory;
 
@@ -83,12 +83,7 @@
   };
 
   home.file.astronvim = {
-    source = pkgs.fetchFromGitHub {
-      owner = "AstroNvim";
-      repo = "AstroNvim";
-      rev = "master";
-      sha256 = "0fd0s38i153rmidzmi98qgljr919y8i6dz0k1a3g4bmsywgpkkgf";
-    };
+    source = astroNvim;
     target = ".config/nvim";
   };
 

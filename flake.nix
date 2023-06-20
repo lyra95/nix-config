@@ -17,8 +17,13 @@
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    astroNvim = {
+      url = "github:AstroNvim/AstroNvim/main";
+      flake = false;
+    };
   };
-  outputs = inputs@{ nixpkgs, home-manager, darwin, ... }: {
+  outputs = inputs@{ nixpkgs, home-manager, darwin, astroNvim, ... }: {
     darwinConfigurations = {
       # PC 이름
       jos-MacBook-Air = darwin.lib.darwinSystem {
@@ -33,7 +38,7 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = { };
-              users.jo = import ./modules/home-manager { username = "jo"; homeDirectory = "/Users/jo"; };
+              users.jo = import ./modules/home-manager { username = "jo"; homeDirectory = "/Users/jo"; astroNvim = astroNvim; };
             };
           }
         ];
@@ -44,7 +49,7 @@
       WSL2Ubuntu = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         modules = [
-          (import ./modules/home-manager { username = "jo"; homeDirectory = "/home/jo"; })
+          (import ./modules/home-manager { username = "jo"; homeDirectory = "/home/jo"; astroNvim = astroNvim; })
         ];
       };
     };
