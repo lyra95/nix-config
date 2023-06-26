@@ -41,7 +41,7 @@
           bottom # cpu, mem usage gui
           gdu # disk usage
         ];
-      others = [ zola ];
+      others = [ zola git-commands ];
     in
     essentials ++ tool ++ cloud ++ langs ++ editor ++ others;
 

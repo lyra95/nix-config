@@ -22,36 +22,47 @@
       url = "github:AstroNvim/AstroNvim/main";
       flake = false;
     };
-  };
-  outputs = inputs@{ nixpkgs, home-manager, darwin, astroNvim, ... }: {
-    darwinConfigurations = {
-      # PC 이름
-      jos-MacBook-Air = darwin.lib.darwinSystem {
-        # nix-info로 현재 pc의 system 변수에 해당하는 값 찾아낼 수 있음
-        system = "aarch64-darwin";
-        pkgs = import nixpkgs { system = "aarch64-darwin"; };
-        modules = [
-          (import ./modules/darwin { username = "jo"; homeDirectory = "/Users/jo"; })
-          home-manager.darwinModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              extraSpecialArgs = { };
-              users.jo = import ./modules/home-manager { username = "jo"; homeDirectory = "/Users/jo"; astroNvim = astroNvim; };
-            };
-          }
-        ];
-      };
-    };
 
-    homeConfigurations = {
-      WSL2Ubuntu = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        modules = [
-          (import ./modules/home-manager { username = "jo"; homeDirectory = "/home/jo"; astroNvim = astroNvim; })
-        ];
-      };
+    git-commands = {
+      url = "github:lyra95/git-commands/main";
     };
   };
+  outputs = inputs@{ nixpkgs, home-manager, darwin, astroNvim, ... }:
+    let
+      overlay = final: prev: { git-commands = inputs.git-commands.packages.${final.system}.default; };
+    in
+    {
+      darwinConfigurations = {
+        # PC 이름
+        jos-MacBook-Air = darwin.lib.darwinSystem {
+          # nix-info로 현재 pc의 system 변수에 해당하는 값 찾아낼 수 있음
+          system = "aarch64-darwin";
+          pkgs = import nixpkgs {
+            system = "aarch64-darwin";
+            overlays = [ overlay ];
+          };
+          modules = [
+            (import ./modules/darwin { username = "jo"; homeDirectory = "/Users/jo"; })
+            home-manager.darwinModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = { };
+                users.jo = import ./modules/home-manager { username = "jo"; homeDirectory = "/Users/jo"; astroNvim = astroNvim; };
+              };
+            }
+          ];
+        };
+      };
+
+      homeConfigurations = {
+        WSL2Ubuntu = home-manager.lib.homeManagerConfiguration {
+          pkgs = import nixpkgs { system = "x86_64-linux"; overlays = [ overlay ]; };
+          modules = [
+            (import ./modules/home-manager { username = "jo"; homeDirectory = "/home/jo"; astroNvim = astroNvim; })
+          ];
+        };
+      };
+    };
 }

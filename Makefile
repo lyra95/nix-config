@@ -4,7 +4,7 @@ darwin-switch:
 
 .Phony: darwin-build
 darwin-build:
-	nix build .\#darwinConfigurations.jos-MacBook-Air.system
+	nix build .\#darwinConfigurations.jos-MacBook-Air.system --show-trace
 
 .Phony: wsl-switch
 wsl-switch: wsl-build
@@ -12,7 +12,7 @@ wsl-switch: wsl-build
 
 .Phony: wsl-build
 wsl-build:
-	nix build --extra-experimental-features 'nix-command flakes' .\#homeConfigurations.WSL2Ubuntu.activationPackage
+	nix build --extra-experimental-features 'nix-command flakes' .\#homeConfigurations.WSL2Ubuntu.activationPackage --show-trace
 
 .Phony: fmt
 fmt:
