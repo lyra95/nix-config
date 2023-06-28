@@ -45,6 +45,10 @@
     in
     essentials ++ tool ++ cloud ++ langs ++ editor ++ others;
 
+  home.file.nixconf.text = "experimental-features = nix-command flakes";
+  home.file.nixconf.target = ".config/nix/nix.conf"; 
+  home.file.nixconf.enable = !pkgs.stdenv.isDarwin;
+
   home.file.awsconfig.source = ./.aws/config;
   home.file.awsconfig.target = ".aws/config";
   # .aws/credentials 파일은 aws configure로 알아서 생성해야됨
