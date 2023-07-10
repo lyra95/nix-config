@@ -17,6 +17,7 @@
         most
         fd # find 대체제
         ripgrep # grep 대체제
+        just # make 대체제
       ];
       cloud = [
         kubectl # https://docs.aws.amazon.com/eks/latest/userguide/create-kubeconfig.html eks kubeconfig 파일 생성 필요
@@ -46,7 +47,7 @@
     essentials ++ tool ++ cloud ++ langs ++ editor ++ others;
 
   home.file.nixconf.text = "experimental-features = nix-command flakes";
-  home.file.nixconf.target = ".config/nix/nix.conf"; 
+  home.file.nixconf.target = ".config/nix/nix.conf";
   home.file.nixconf.enable = !pkgs.stdenv.isDarwin;
 
   home.file.awsconfig.source = ./.aws/config;

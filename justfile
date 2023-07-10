@@ -1,25 +1,22 @@
-.Phony: darwin-switch
-darwin-switch:
+[macos]
+switch: build
 	./result/sw/bin/darwin-rebuild switch --flake .
 
-.Phony: darwin-build
-darwin-build:
-	nix build .\#darwinConfigurations.jos-MacBook-Air.system --show-trace
-
-.Phony: wsl-switch
-wsl-switch: wsl-build
+[linux]
+switch: build
 	./result/bin/home-manager-generation switch --flake .
 
-.Phony: wsl-build
-wsl-build:
+[macos]
+build:
+	nix build .\#darwinConfigurations.jos-MacBook-Air.system --show-trace
+
+[linux]
+build:
 	nix build --extra-experimental-features 'nix-command flakes' .\#homeConfigurations.WSL2Ubuntu.activationPackage --show-trace
 
-.Phony: fmt
 fmt:
 	nix-shell -p nixpkgs-fmt --run 'nixpkgs-fmt .'
 
-.ONESHELL: gc
-.Phony: gc
 gc:
 	nix-env --delete-generations old
 	nix-store --gc
