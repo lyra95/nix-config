@@ -146,6 +146,14 @@
       commonFunc // wslFunc;
   # WSL2 Ubuntu에서 이게 먼저 로드가 안되니까 nix 커맨드를 못 찾음
   programs.fish.shellInit =
-    if pkgs.stdenv.isDarwin then ""
-    else "source $HOME/.nix-profile/etc/profile.d/nix.fish\nsource $HOME/.nix-profile/etc/profile.d/nix-daemon.fish";
+    let
+      nix-init =
+        ''
+          source $HOME/.nix-profile/etc/profile.d/nix.fish
+          source $HOME/.nix-profile/etc/profile.d/nix-daemon.fish
+        '';
+    in
+    if
+      pkgs.stdenv.isDarwin then pkgs.lib.concatLines [ ]
+    else pkgs.lib.concatLines [ nix-init ];
 }
