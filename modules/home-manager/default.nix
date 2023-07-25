@@ -1,5 +1,10 @@
 # https://mipmip.github.io/home-manager-option-search/ 에서 검색 가능
-{ username, homeDirectory, astroNvim }: { pkgs, ... }: {
+{ username, homeDirectory, astroNvim }: { pkgs, ... }:
+let
+  isDarwin = pkgs.stdenv.isDarwin;
+  inherit (pkgs) lib;
+in
+{
   home.username = username;
   home.homeDirectory = homeDirectory;
 
@@ -46,14 +51,18 @@
     in
     essentials ++ tool ++ cloud ++ langs ++ editor ++ others;
 
-  home.file.nixconf.text = "experimental-features = nix-command flakes";
-  home.file.nixconf.target = ".config/nix/nix.conf";
-  home.file.nixconf.enable = !pkgs.stdenv.isDarwin;
+  home.file.nixconf = {
+    text = "experimental-features = nix-command flakes";
+    target = ".config/nix/nix.conf";
+    enable = !isDarwin;
+  };
 
-  home.file.awsconfig.source = ./.aws/config;
-  home.file.awsconfig.target = ".aws/config";
-  # .aws/credentials 파일은 aws configure로 알아서 생성해야됨
-  # 아니면 개인용 vault라도 셋업해야되나
+  home.file.awsconfig = {
+    source = ./.aws/config;
+    target = ".aws/config";
+    # .aws/credentials 파일은 aws configure로 알아서 생성해야됨
+    # 아니면 개인용 vault라도 셋업해야되나
+  };
 
   home.sessionVariables = {
     #  PAGER = "less";
@@ -92,68 +101,79 @@
     target = ".config/nvim";
   };
 
-  programs.fish.enable = true;
-  programs.fish.functions =
-    let
-      commonFunc = {
-        man = {
-          body = "command man $argv | most";
-          description = "Display colored man pages";
-        };
-        kcomp = {
-          # shell init script에 넣어도 자동완성이 동작 안 해서 일단 이렇게라도
-          body = "kubectl completion fish | source";
-        };
-        k = {
-          body = "kubectl $argv";
-        };
-        km = {
-          body = "kustomize $argv";
-        };
-        ll = {
-          body = "exa -al $argv";
-        };
-        tree = {
-          body = "exa --tree $argv";
-        };
-        remove-cr = {
-          body = ''
-            set file $argv
-            set tempf $(mktemp)
-            cat "$file" > "$tempf"
-            tr -d '\r' < "$tempf" > "$file";
+  programs.fish =
+    {
+      enable = true;
+    } //
+    {
+      shellAbbrs = {
+        k = "kubectl";
+        km = "kustomize";
+        ls = "exa";
+        ll = "exa -al";
+        tree = "exa --tree";
+      };
+
+      functions =
+        let
+          commonFunc = {
+            man = {
+              body = "command man $argv | most";
+              description = "Display colored man pages";
+            };
+            remove-cr = {
+              body = ''
+                set file $argv
+                set tempf $(mktemp)
+                cat "$file" > "$tempf"
+                tr -d '\r' < "$tempf" > "$file";
+              '';
+            };
+          };
+          wslFunc = {
+            open = {
+              body = "explorer.exe $argv";
+              description = "Open in a File Explorer, like a MacOS";
+            };
+            wit = {
+              body = "git.exe $argv";
+              description = "windows git";
+            };
+            wode = {
+              body = "powershell.exe code $argv";
+              description = "windows vscode";
+            };
+          };
+        in
+        if isDarwin then
+          commonFunc
+        else
+          commonFunc // wslFunc;
+    } //
+    (
+      let
+        # WSL2 Ubuntu에서 이게 먼저 로드가 안되니까 nix 커맨드를 못 찾음
+        nix-init =
+          ''
+            source $HOME/.nix-profile/etc/profile.d/nix.fish
+            source $HOME/.nix-profile/etc/profile.d/nix-daemon.fish
           '';
-        };
-      };
-      wslFunc = {
-        open = {
-          body = "explorer.exe $argv";
-          description = "Open in a File Explorer, like a MacOS";
-        };
-        wit = {
-          body = "git.exe $argv";
-          description = "windows git";
-        };
-        wode = {
-          body = "powershell.exe code $argv";
-          description = "windows vscode";
-        };
-      };
-    in
-    if pkgs.stdenv.isDarwin then
-      commonFunc
-    else
-      commonFunc // wslFunc;
-  # WSL2 Ubuntu에서 이게 먼저 로드가 안되니까 nix 커맨드를 못 찾음
-  programs.fish.shellInit =
-    let
-      nix-init =
-        ''
-          source $HOME/.nix-profile/etc/profile.d/nix.fish
-          source $HOME/.nix-profile/etc/profile.d/nix-daemon.fish
-        '';
-    in
-    if
-      pkgs.stdenv.isDarwin then pkgs.lib.concatLines [ ]
-    else pkgs.lib.concatLines [ nix-init ];
+        fishCompPath = "~/.config/fish/completions";
+        justfile =
+          "just --completions fish > ${fishCompPath}/just.fish";
+        kubectl =
+          "kubectl completion fish > ${fishCompPath}/kubectl.fish";
+        helm =
+          "helm completion fish > ${fishCompPath}/helm.fish";
+        kustomize =
+          "kustomize completion fish > ${fishCompPath}/kustomize.fish";
+        common = [ justfile kubectl helm kustomize ];
+      in
+      {
+        shellInit =
+          if
+            isDarwin then lib.concatLines common
+          else lib.concatLines ([ nix-init ] ++ common);
+      }
+    );
 }
