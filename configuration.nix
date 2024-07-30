@@ -5,7 +5,12 @@
 # NixOS-WSL specific options are documented on the NixOS-WSL repository:
 # https://github.com/nix-community/NixOS-WSL
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
@@ -17,12 +22,17 @@
   wsl.enable = true;
   wsl.defaultUser = "nixos";
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  environment.systemPackages = with pkgs; [ git vim ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+  environment.systemPackages = with pkgs; [
+    git
+    vim
+  ];
   wsl.docker-desktop.enable = true;
   fix.docker-desktop.enable = true;
   environment.variables.EDITOR = "vim";
-  
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
