@@ -11,6 +11,7 @@
   imports = [
     # include NixOS-WSL modules
     <nixos-wsl/modules>
+    ./modules/docker-desktop-fix.nix
   ];
 
   wsl.enable = true;
@@ -18,6 +19,8 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   environment.systemPackages = with pkgs; [ git vim ];
+  wsl.docker-desktop.enable = true;
+  fix.docker-desktop.enable = true;
   environment.variables.EDITOR = "vim";
   
 
