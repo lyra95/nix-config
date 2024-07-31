@@ -9,13 +9,13 @@
   config,
   lib,
   pkgs,
+  nixos-wsl,
   ...
 }:
 
 {
   imports = [
-    # include NixOS-WSL modules
-    <nixos-wsl/modules>
+    nixos-wsl.nixosModules.wsl
     ./modules/docker-desktop-fix.nix
   ];
 
