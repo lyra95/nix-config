@@ -29,6 +29,7 @@
   environment.systemPackages = with pkgs; [
     git
     vim
+    file
   ];
   wsl.docker-desktop.enable = true;
   fix.docker-desktop.enable = true;
