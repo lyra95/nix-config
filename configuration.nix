@@ -8,6 +8,8 @@
   lib,
   pkgs,
   nixos-wsl,
+  inputs,
+  system,
   ...
 }: {
   imports = [
@@ -26,6 +28,7 @@
     git
     vim
     file
+    inputs.agenix.packages."${system}".default
   ];
   wsl.docker-desktop.enable = true;
   fix.docker-desktop.enable = true;
