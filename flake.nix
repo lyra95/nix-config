@@ -5,7 +5,7 @@
     systems.url = "github:nix-systems/default";
     flake-utils.url = "github:numtide/flake-utils";
     flake-utils.inputs.systems.follows = "systems";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
       inputs.flake-utils.follows = "flake-utils";
@@ -21,6 +21,8 @@
       url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixvim.url = "github:nix-community/nixvim";
+    nixvim.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ {
@@ -29,6 +31,7 @@
     flake-utils,
     agenix,
     home-manager,
+    nixvim,
     ...
   }:
     {
@@ -65,6 +68,18 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       formatter = pkgs.alejandra;
-      devShells.default = pkgs.mkShell {packages = with pkgs; [alejandra];};
+      devShells.default = let
+        nixvim' = nixvim.legacyPackages.${system};
+        nixvimModule = {
+          inherit pkgs;
+          module = import ./nixvim;
+          extraSpecialArgs = {
+            inherit inputs;
+            inherit pkgs;
+          };
+        };
+        nvim = nixvim'.makeNixvimWithModule nixvimModule;
+      in
+        pkgs.mkShell {packages = [pkgs.alejandra nvim];};
     });
 }
