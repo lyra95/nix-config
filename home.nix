@@ -17,6 +17,20 @@
     jq
   ];
 
+  programs.gitui = {
+    enable = true;
+  };
+
+  # file explorer, Windows Terminal (>= v1.22.2362.0)
+  programs.yazi = {
+    enable = true;
+  };
+
+  # tmux alternative
+  programs.zellij = {
+    enable = true;
+  };
+
   home.stateVersion = "24.05";
   programs.home-manager.enable = true;
 
