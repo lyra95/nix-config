@@ -17,6 +17,7 @@
   };
 
   plugins = {
+    nvim-autopairs.enable = true;
     neo-tree = {
       enable = true;
       filesystem = {
