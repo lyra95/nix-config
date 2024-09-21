@@ -5,6 +5,17 @@
   colorscheme = "catppuccin";
   colorschemes.catppuccin.enable = true;
 
+  globalOpts = {
+    number = true;
+    relativenumber = true;
+    ruler = true;
+
+    # reserve some space on the left for some icons (breakpoints, warning, etc)
+    signcolumn = "yes";
+
+    cursorline = true;
+  };
+
   plugins = {
     neo-tree = {
       enable = true;
