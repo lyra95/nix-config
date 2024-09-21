@@ -7,8 +7,10 @@
   imports = [
     inputs.agenix.homeManagerModules.default
     ./homeManagerModules/git
+    ./homeManagerModules/aws
   ];
 
+  aws.enable = true;
   git.enable = true;
 
   home.packages = with pkgs; [
