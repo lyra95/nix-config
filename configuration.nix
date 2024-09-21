@@ -24,12 +24,15 @@
     "nix-command"
     "flakes"
   ];
-  environment.systemPackages = with pkgs; [
-    git
-    vim
-    file
-    inputs.agenix.packages."${system}".default
-  ];
+  environment.systemPackages =
+    (with pkgs; [
+      git
+      vim
+      file
+    ])
+    ++ [
+      inputs.agenix.packages."${system}".default
+    ];
   wsl.docker-desktop.enable = true;
   fix.docker-desktop.enable = true;
   environment.variables.EDITOR = "vim";
