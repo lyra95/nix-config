@@ -1,9 +1,20 @@
+# 1. https://nix-community.github.io/nixvim/search/
+# 2. https://nix-community.github.io/nixvim/user-guide/config-examples.html
+# 3. https://grep.app/
 {
   colorscheme = "catppuccin";
   colorschemes.catppuccin.enable = true;
 
   plugins = {
-    neo-tree.enable = true;
+    neo-tree = {
+      enable = true;
+      filesystem = {
+        filteredItems = {
+          hideDotfiles = false;
+          hideGitignored = false;
+        };
+      };
+    };
     bufferline.enable = true;
     lualine.enable = true;
     lsp-format = {
