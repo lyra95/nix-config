@@ -23,14 +23,6 @@
   plugins = {
     nvim-autopairs.enable = true;
     lualine.enable = true;
-    neo-tree = {
-      enable = true;
-      filesystem = {
-        filteredItems = {
-          hideDotfiles = false;
-          hideGitignored = false;
-        };
-      };
-    };
+    comment.enable = true;
   };
 }

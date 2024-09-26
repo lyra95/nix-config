@@ -13,8 +13,49 @@
         }
       ];
     };
+
+    neo-tree = {
+      enable = true;
+      filesystem = {
+        filteredItems = {
+          hideDotfiles = false;
+          hideGitignored = false;
+        };
+      };
+      defaultComponentConfigs = {
+        indent = {
+          withExpanders = true;
+          expanderCollapsed = "󰅂";
+          expanderExpanded = "󰅀";
+          expanderHighlight = "NeoTreeExpander";
+        };
+
+        gitStatus = {
+          symbols = {
+            added = " ";
+            conflict = "󰩌 ";
+            deleted = "󱂥";
+            ignored = " ";
+            modified = " ";
+            renamed = "󰑕";
+            staged = "󰩍";
+            unstaged = "";
+            untracked = " ";
+          };
+        };
+      };
+    };
   };
   keymaps = [
+    {
+      mode = "n";
+      key = "<leader>t";
+      action = "<cmd>Neotree toggle<cr>";
+      options = {
+        desc = "toggle Neotree";
+      };
+    }
+
     {
       mode = "n";
       key = "]b";
