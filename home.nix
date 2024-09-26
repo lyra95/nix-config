@@ -1,11 +1,5 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
-    inputs.agenix.homeManagerModules.default
     ./homeManagerModules/git
     ./homeManagerModules/aws
   ];

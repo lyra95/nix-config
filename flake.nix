@@ -51,9 +51,10 @@
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                extraSpecialArgs = {
-                  inherit inputs;
-                };
+                sharedModules = [
+                  inputs.agenix.homeManagerModules.default
+                ];
+                extraSpecialArgs = {};
                 users.nixos = import ./home.nix;
               };
             }
