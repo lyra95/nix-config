@@ -73,13 +73,10 @@
         nixvimModule = {
           inherit pkgs;
           module = import ./nixvim;
-          extraSpecialArgs = {
-            inherit inputs;
-            inherit pkgs;
-          };
+          extraSpecialArgs = {};
         };
         nvim = nixvim'.makeNixvimWithModule nixvimModule;
       in
-        pkgs.mkShell {packages = [pkgs.alejandra nvim];};
+        pkgs.mkShell {packages = [nvim];};
     });
 }
