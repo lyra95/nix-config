@@ -25,7 +25,7 @@
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs @ {
+  outputs = {
     nixpkgs,
     nixos-wsl,
     flake-utils,
@@ -38,21 +38,25 @@
       nixosConfigurations = {
         nixos = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = {
-            inherit nixos-wsl;
-            inherit inputs;
-            system = "x86_64-linux";
-          };
-          modules = [
-            agenix.nixosModules.default
-            ./configuration.nix
+          specialArgs = {};
+          modules = let
+            configurationNix =
+              (import ./configuration.nix)
+              {
+                inherit agenix;
+                inherit nixos-wsl;
+                system = "x86_64-linux";
+                defaultUserName = "nixos";
+              };
+          in [
+            configurationNix
             home-manager.nixosModules.home-manager
             {
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 sharedModules = [
-                  inputs.agenix.homeManagerModules.default
+                  agenix.homeManagerModules.default
                 ];
                 extraSpecialArgs = {};
                 users.nixos = import ./home.nix;
