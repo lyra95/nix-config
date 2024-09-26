@@ -33,7 +33,21 @@
     home-manager,
     nixvim,
     ...
-  }:
+  }: let
+    # https://discourse.nixos.org/t/using-nixpkgs-legacypackages-system-vs-import/17462/8
+    # import vs legacyPackages
+    # the latter has performance gain
+    pkgsBuilder = system: nixpkgs.legacyPackages.${system};
+    nixvimBuilder = system: let
+      nixvim' = nixvim.legacyPackages.${system};
+      nixvimModule = {
+        pkgs = pkgsBuilder system;
+        module = import ./nixvim;
+        extraSpecialArgs = {};
+      };
+    in
+      nixvim'.makeNixvimWithModule nixvimModule;
+  in
     {
       nixosConfigurations = {
         "work" = nixpkgs.lib.nixosSystem {
@@ -59,7 +73,9 @@
                   agenix.homeManagerModules.default
                 ];
                 extraSpecialArgs = {};
-                users."jo" = import ./home.nix;
+                users."jo" = (import ./home.nix) {
+                  nixvim = nixvimBuilder "x86_64-linux";
+                };
               };
             }
           ];
@@ -67,21 +83,10 @@
       };
     }
     // flake-utils.lib.eachDefaultSystem (system: let
-      # https://discourse.nixos.org/t/using-nixpkgs-legacypackages-system-vs-import/17462/8
-      # import vs legacyPackages
-      # the latter uses less disk size
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = pkgsBuilder system;
+      nvim = nixvimBuilder system;
     in {
       formatter = pkgs.alejandra;
-      devShells.default = let
-        nixvim' = nixvim.legacyPackages.${system};
-        nixvimModule = {
-          inherit pkgs;
-          module = import ./nixvim;
-          extraSpecialArgs = {};
-        };
-        nvim = nixvim'.makeNixvimWithModule nixvimModule;
-      in
-        pkgs.mkShell {packages = [nvim];};
+      devShells.default = pkgs.mkShell {packages = [nvim];};
     });
 }
