@@ -3,6 +3,7 @@
   agenix,
   system,
   defaultUserName,
+  hostName,
 }:
 # Edit this configuration file to define what should be installed on
 # your system. Help is available in the configuration.nix(5) man page, on
@@ -15,8 +16,11 @@
     ./modules/docker-desktop-fix.nix
   ];
 
+  nixpkgs.hostPlatform = system;
+
   wsl.enable = true;
   wsl.defaultUser = defaultUserName;
+  wsl.wslConf.network.hostname = hostName;
 
   nix.settings.experimental-features = [
     "nix-command"

@@ -36,8 +36,7 @@
   }:
     {
       nixosConfigurations = {
-        nixos = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+        "work" = nixpkgs.lib.nixosSystem {
           specialArgs = {};
           modules = let
             configurationNix =
@@ -46,7 +45,8 @@
                 inherit agenix;
                 inherit nixos-wsl;
                 system = "x86_64-linux";
-                defaultUserName = "nixos";
+                defaultUserName = "jo";
+                hostName = "work";
               };
           in [
             configurationNix
@@ -59,7 +59,7 @@
                   agenix.homeManagerModules.default
                 ];
                 extraSpecialArgs = {};
-                users.nixos = import ./home.nix;
+                users."jo" = import ./home.nix;
               };
             }
           ];
