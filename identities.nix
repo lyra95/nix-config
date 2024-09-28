@@ -1,0 +1,5 @@
+{
+  home = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDnXUyIHoD17qpH4m8aRfCDXNqYV27sTSlttEx3/ge/M root@nixos";
+  work = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAsTK5qze+z5HT/RGoYKanltHGUm+ed8RrZSUeD8XIU3 jo@work";
+  dell = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINJSlCdDLrVIKwowSvVEeF2cL5j5og2A/UahY7C/BaWM jo@dell";
+}
