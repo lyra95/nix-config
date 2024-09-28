@@ -1,7 +1,7 @@
-{nixvim}: {pkgs, ...}: {
+{nvim}: {pkgs, ...}: {
   imports = [
-    ./homeManagerModules/git
-    ./homeManagerModules/aws
+    ./modules/git
+    ./modules/aws
   ];
 
   aws.enable = true;
@@ -11,7 +11,7 @@
     (with pkgs; [
       jq
     ])
-    ++ [nixvim];
+    ++ [nvim];
 
   # https://github.com/extrawurst/gitui/issues/495
   # git push with ssh is not working currently due to libgit2 ssh client issue

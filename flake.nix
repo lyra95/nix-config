@@ -76,8 +76,8 @@
                   agenix.homeManagerModules.default
                 ];
                 extraSpecialArgs = {};
-                users."jo" = (import ./home.nix) {
-                  vim = nvim.packages."x86_64-linux";
+                users."jo" = (import ./home-manager/home.nix) {
+                  nvim = nvim.packages."x86_64-linux".default;
                 };
               };
             }
