@@ -53,6 +53,36 @@
   in
     {
       nixosConfigurations = {
+        "dell" = nixpkgs.lib.nixosSystem {
+          specialArgs = {};
+          modules = let
+            configurationNix =
+              (import ./configuration.nix)
+              {
+                inherit agenix;
+                inherit nixos-wsl;
+                system = "x86_64-linux";
+                defaultUserName = "jo";
+                hostName = "dell";
+              };
+          in [
+            configurationNix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                sharedModules = [
+                  agenix.homeManagerModules.default
+                ];
+                extraSpecialArgs = {};
+                users."jo" = (import ./home-manager/home.nix) {
+                  nvim = nvim.packages."x86_64-linux".default;
+                };
+              };
+            }
+          ];
+        };
         "work" = nixpkgs.lib.nixosSystem {
           specialArgs = {};
           modules = let
