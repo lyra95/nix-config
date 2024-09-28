@@ -28,7 +28,6 @@
   # tmux alternative
   programs.zellij = {
     enable = true;
-    enableBashIntegration = true;
   };
 
   programs.fzf = {
