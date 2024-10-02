@@ -2,6 +2,7 @@
   imports = [
     ./modules/git
     ./modules/aws
+    ./modules/k8s.nix
   ];
 
   aws.enable = true;
