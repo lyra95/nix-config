@@ -14,6 +14,11 @@
     ])
     ++ [nvim];
 
+  programs.starship = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
   # https://github.com/extrawurst/gitui/issues/495
   # git push with ssh is not working currently due to libgit2 ssh client issue
   programs.gitui = {
