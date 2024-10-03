@@ -11,6 +11,8 @@
   home.packages =
     (with pkgs; [
       jq
+      yq-go
+      hex
       wl-clipboard # gitui clipboard dependency
     ])
     ++ [nvim];
