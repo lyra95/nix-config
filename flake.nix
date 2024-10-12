@@ -37,9 +37,8 @@
     };
   };
 
-  outputs = {
+  outputs = inputs @ {
     nixpkgs,
-    nixos-wsl,
     flake-utils,
     agenix,
     home-manager,
@@ -50,66 +49,70 @@
     # import vs legacyPackages
     # the latter has performance gain
     pkgsBuilder = system: nixpkgs.legacyPackages.${system};
+    _lib = import ./lib;
+    wslBuilder = _lib.wslBuilder inputs;
   in
     {
-      nixosConfigurations = {
-        "dell" = nixpkgs.lib.nixosSystem {
-          specialArgs = {};
-          modules = let
-            configurationNix =
-              (import ./configuration.nix)
+      homeConfigurations."jo" =
+        home-manager.lib.homeManagerConfiguration
+        {
+          pkgs = pkgsBuilder "x86_64-linux";
+          modules = [
+            agenix.homeManagerModules.default
+            ((import ./home-manager/home.nix)
               {
-                inherit agenix;
-                inherit nixos-wsl;
-                system = "x86_64-linux";
-                defaultUserName = "jo";
-                hostName = "dell";
-              };
-          in [
-            configurationNix
-            home-manager.nixosModules.home-manager
+                nvim = nvim.packages."x86_64-linux".default;
+              })
             {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                sharedModules = [
-                  agenix.homeManagerModules.default
-                ];
-                extraSpecialArgs = {};
-                users."jo" = (import ./home-manager/home.nix) {
-                  nvim = nvim.packages."x86_64-linux".default;
-                };
-              };
+              home.username = "jo";
+              home.homeDirectory = "/home/jo";
             }
           ];
         };
-        "work" = nixpkgs.lib.nixosSystem {
-          specialArgs = {};
-          modules = let
-            configurationNix =
-              (import ./configuration.nix)
-              {
-                inherit agenix;
-                inherit nixos-wsl;
-                system = "x86_64-linux";
-                defaultUserName = "jo";
-                hostName = "work";
-              };
-          in [
-            configurationNix
-            home-manager.nixosModules.home-manager
+      nixosConfigurations = {
+        "home" = wslBuilder {
+          name = "home";
+          system = "x86_64-linux";
+          userName = "jo";
+          modules = [
             {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                sharedModules = [
-                  agenix.homeManagerModules.default
-                ];
-                extraSpecialArgs = {};
-                users."jo" = (import ./home-manager/home.nix) {
-                  nvim = nvim.packages."x86_64-linux".default;
-                };
-              };
+              imports = [
+                ./modules/docker-desktop-fix.nix
+              ];
+
+              wsl.docker-desktop.enable = true;
+              fix.docker-desktop.enable = true;
+
+              system.stateVersion = "23.11";
+            }
+          ];
+        };
+        "dell" = wslBuilder {
+          name = "dell";
+          system = "x86_64-linux";
+          userName = "jo";
+          modules = [
+            {
+              wsl.docker-desktop.enable = false;
+
+              system.stateVersion = "23.11";
+            }
+          ];
+        };
+        "work" = wslBuilder {
+          name = "work";
+          system = "x86_64-linux";
+          userName = "jo";
+          modules = [
+            {
+              imports = [
+                ./modules/docker-desktop-fix.nix
+              ];
+
+              wsl.docker-desktop.enable = true;
+              fix.docker-desktop.enable = true;
+
+              system.stateVersion = "23.11";
             }
           ];
         };

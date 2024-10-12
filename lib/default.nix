@@ -1,0 +1,3 @@
+{
+  wslBuilder = import ./wsl.nix;
+}
