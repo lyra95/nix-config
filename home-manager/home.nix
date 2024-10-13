@@ -17,6 +17,13 @@
     ])
     ++ [nvim];
 
+  programs.eza = {
+    enable = true;
+    enableBashIntegration = true;
+    git = true;
+    icons = true;
+  };
+
   programs.starship = {
     enable = true;
     enableBashIntegration = true;
@@ -50,6 +57,9 @@
     shellAliases = {
       vim = "nvim";
       vi = "nvim";
+      ls = "eza";
+      ll = "eza -al";
+      tree = "eza --tree";
     };
   };
 
