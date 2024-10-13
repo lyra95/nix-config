@@ -68,6 +68,7 @@
             {
               home.username = "jo";
               home.homeDirectory = "/home/jo";
+              home.packages = [home-manager.packages.${system}.default];
             }
           ];
         };

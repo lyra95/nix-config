@@ -1,7 +1,6 @@
 inputs @ {
   nixpkgs,
   nixos-wsl,
-  home-manager,
   ...
 }: {
   name,
@@ -17,9 +16,7 @@ inputs @ {
         "flakes"
       ];
 
-      environment.systemPackages =
-        (with pkgs; [git vim file])
-        ++ [home-manager.packages.${system}.default];
+      environment.systemPackages = with pkgs; [git vim file];
       environment.variables.EDITOR = "vim";
     };
 
