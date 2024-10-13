@@ -20,6 +20,7 @@
       yq-go
       hex
       bat-extras.batman # modern man
+      delta # modern diff
     ])
     ++ [nvim];
 
@@ -75,6 +76,7 @@
       find = "fd";
       grep = "rg";
       man = "batman";
+      diff = "delta";
     };
   };
 
