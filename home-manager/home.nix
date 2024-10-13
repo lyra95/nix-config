@@ -24,6 +24,10 @@
     icons = true;
   };
 
+  programs.bat = {
+    enable = true;
+  };
+
   programs.starship = {
     enable = true;
     enableBashIntegration = true;
@@ -59,6 +63,7 @@
       vi = "nvim";
       ls = "eza";
       ll = "eza -al";
+      cat = "bat";
       tree = "eza --tree";
     };
   };
