@@ -45,10 +45,12 @@
     nvim,
     ...
   }: let
+    system = "x86_64-linux";
     # https://discourse.nixos.org/t/using-nixpkgs-legacypackages-system-vs-import/17462/8
     # import vs legacyPackages
     # the latter has performance gain
     pkgsBuilder = system: nixpkgs.legacyPackages.${system};
+    pkgs = pkgsBuilder system;
     _lib = import ./lib;
     wslBuilder = _lib.wslBuilder inputs;
   in
@@ -56,12 +58,12 @@
       homeConfigurations."jo" =
         home-manager.lib.homeManagerConfiguration
         {
-          pkgs = pkgsBuilder "x86_64-linux";
+          inherit pkgs;
           modules = [
             agenix.homeManagerModules.default
             ((import ./home-manager/home.nix)
               {
-                nvim = nvim.packages."x86_64-linux".default;
+                nvim = nvim.packages.${system}.default;
               })
             {
               home.username = "jo";
@@ -72,7 +74,7 @@
       nixosConfigurations = {
         "home" = wslBuilder {
           name = "home";
-          system = "x86_64-linux";
+          inherit system;
           userName = "jo";
           modules = [
             {
@@ -89,7 +91,7 @@
         };
         "dell" = wslBuilder {
           name = "dell";
-          system = "x86_64-linux";
+          inherit system;
           userName = "jo";
           modules = [
             {
@@ -101,7 +103,7 @@
         };
         "work" = wslBuilder {
           name = "work";
-          system = "x86_64-linux";
+          inherit system;
           userName = "jo";
           modules = [
             {
