@@ -19,6 +19,7 @@
       jq
       yq-go
       hex
+      bat-extras.batman # modern man
     ])
     ++ [nvim];
 
@@ -73,6 +74,7 @@
       tree = "eza --tree";
       find = "fd";
       grep = "rg";
+      man = "batman";
     };
   };
 
