@@ -3,6 +3,7 @@
     ./modules/git
     ./modules/aws
     ./modules/k8s.nix
+    ./modules/gitui
   ];
 
   aws.enable = true;
@@ -13,7 +14,6 @@
       jq
       yq-go
       hex
-      wl-clipboard # gitui clipboard dependency
     ])
     ++ [nvim];
 
@@ -23,12 +23,6 @@
     settings = {
       command_timeout = 10000;
     };
-  };
-
-  # https://github.com/extrawurst/gitui/issues/495
-  # git push with ssh is not working currently due to libgit2 ssh client issue
-  programs.gitui = {
-    enable = true;
   };
 
   # file explorer, Windows Terminal (>= v1.22.2362.0)
@@ -46,6 +40,7 @@
     enable = true;
     enableBashIntegration = true;
   };
+
   programs.bash = {
     enable = true;
     historyControl = ["erasedups" "ignoredups" "ignorespace"];
