@@ -20,6 +20,9 @@
   programs.starship = {
     enable = true;
     enableBashIntegration = true;
+    settings = {
+      command_timeout = 10000;
+    };
   };
 
   # https://github.com/extrawurst/gitui/issues/495
