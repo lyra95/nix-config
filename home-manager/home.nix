@@ -4,10 +4,15 @@
     ./modules/aws
     ./modules/k8s.nix
     ./modules/gitui
+    ./modules/starship
   ];
 
   aws.enable = true;
   git.enable = true;
+  starship = {
+    enable = true;
+    enableBashIntegration = true;
+  };
 
   home.packages =
     (with pkgs; [
@@ -28,14 +33,6 @@
   # modern cat
   programs.bat = {
     enable = true;
-  };
-
-  programs.starship = {
-    enable = true;
-    enableBashIntegration = true;
-    settings = {
-      command_timeout = 10000;
-    };
   };
 
   # file explorer, Windows Terminal (>= v1.22.2362.0)
