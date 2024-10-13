@@ -17,6 +17,7 @@
     ])
     ++ [nvim];
 
+  # modern ls
   programs.eza = {
     enable = true;
     enableBashIntegration = true;
@@ -24,6 +25,7 @@
     icons = true;
   };
 
+  # modern cat
   programs.bat = {
     enable = true;
   };
@@ -47,6 +49,7 @@
     enable = true;
   };
 
+  # fuzzy finder (bash history, etc)
   programs.fzf = {
     enable = true;
     enableBashIntegration = true;
