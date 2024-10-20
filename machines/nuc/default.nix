@@ -11,14 +11,14 @@
   cifs = {
     mount = "/mnt/nuc_backup";
     remote = "//jo-home/nuc_backup";
-    secrets = config.age.secrets.smb-secrets.path;
+    secret = config.age.secrets.smb-secrets.path;
   };
 
   k3s = {
     enable = true;
   };
 
-  age.secrets.tailscale-authkey.file = ./tailscale-authkey.age;
+  age.secrets.tailscale-authkey.file = ./tailscale_authkey.age;
   tailscale = {
     enable = true;
     inherit hostName;
