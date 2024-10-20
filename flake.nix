@@ -53,25 +53,19 @@
     pkgs = pkgsBuilder system;
     _lib = import ./lib;
     wslBuilder = _lib.wslBuilder inputs;
+    homeBuilder = _lib.homeBuilder inputs;
   in
     {
-      homeConfigurations."jo" =
-        home-manager.lib.homeManagerConfiguration
-        {
-          inherit pkgs;
-          modules = [
-            agenix.homeManagerModules.default
-            ((import ./home-manager/home.nix)
-              {
-                nvim = nvim.packages.${system}.default;
-              })
-            {
-              home.username = "jo";
-              home.homeDirectory = "/home/jo";
-              home.packages = [home-manager.packages.${system}.default];
-            }
-          ];
-        };
+      homeConfigurations."jo" = homeBuilder {
+        name = "jo";
+        inherit system pkgs;
+        modules = [
+          {
+            aws.enable = true;
+            git.enable = true;
+          }
+        ];
+      };
       nixosConfigurations = {
         "home" = wslBuilder {
           name = "home";
@@ -102,6 +96,7 @@
           userName = "jo";
           modules = [
             {
+              # todos: podman setup
               wsl.docker-desktop.enable = false;
 
               system.stateVersion = "23.11";
@@ -123,6 +118,26 @@
 
               system.stateVersion = "23.11";
             }
+          ];
+        };
+      };
+    }
+    // {
+      homeManagerModules = rec {
+        aws = ./modules/home-manager/aws;
+        git = ./modules/home-manager/git;
+        gitui = ./modules/home-manager/gitui;
+        starship = ./modules/home-manager/starship;
+        k8s = ./modules/home-manager/k8s.nix;
+        nvim = ./modules/home-manager/nvim.nix;
+        _all = {
+          imports = [
+            aws
+            git
+            gitui
+            starship
+            k8s
+            nvim
           ];
         };
       };
