@@ -56,6 +56,7 @@
     homeBuilder = _lib.homeBuilder inputs;
     nixosBuilder = _lib.nixosBuilder inputs;
   in
+    # todo: add check 1. eval nix expression test 2. vm test
     {
       homeConfigurations."jo" = homeBuilder {
         name = "jo";
