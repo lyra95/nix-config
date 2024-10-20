@@ -75,7 +75,7 @@ inputs @ {
 in
   nixpkgs.lib.nixosSystem {
     specialArgs = {
-      inherit hostName;
+      inherit hostName defaultUserName;
     };
     inherit system;
     modules =

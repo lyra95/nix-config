@@ -1,6 +1,7 @@
 {
   config,
   hostName,
+  defaultUserName,
   ...
 }: {
   imports = [
@@ -16,6 +17,7 @@
 
   k3s = {
     enable = true;
+    user = defaultUserName;
   };
 
   age.secrets.tailscale-authkey.file = ./tailscale_authkey.age;
