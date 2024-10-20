@@ -1,4 +1,5 @@
 inputs @ {
+  self,
   nixpkgs,
   nixos-wsl,
   ...
@@ -23,6 +24,7 @@ inputs @ {
     wsl = {
       imports = [
         nixos-wsl.nixosModules.wsl
+        self.nixosModules._wsl
       ];
       wsl.enable = true;
       wsl.defaultUser = userName;

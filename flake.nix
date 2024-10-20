@@ -73,10 +73,6 @@
           userName = "jo";
           modules = [
             {
-              imports = [
-                ./modules/docker-desktop-fix.nix
-              ];
-
               wsl.docker-desktop.enable = true;
               fix.docker-desktop.enable = true;
 
@@ -109,10 +105,6 @@
           userName = "jo";
           modules = [
             {
-              imports = [
-                ./modules/docker-desktop-fix.nix
-              ];
-
               wsl.docker-desktop.enable = true;
               fix.docker-desktop.enable = true;
 
@@ -123,6 +115,14 @@
       };
     }
     // {
+      nixosModules = rec {
+        docker-desktop-fix = ./modules/wsl/docker-desktop-fix.nix;
+        _wsl = {
+          imports = [
+            docker-desktop-fix
+          ];
+        };
+      };
       homeManagerModules = rec {
         aws = ./modules/home-manager/aws;
         git = ./modules/home-manager/git;
