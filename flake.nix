@@ -58,15 +58,27 @@
   in
     # todo: add check 1. eval nix expression test 2. vm test
     {
-      homeConfigurations."jo" = homeBuilder {
-        name = "jo";
-        inherit system pkgs;
-        modules = [
-          {
-            aws.enable = true;
-            git.enable = true;
-          }
-        ];
+      homeConfigurations = {
+        "jo" = homeBuilder {
+          name = "jo";
+          inherit system pkgs;
+          modules = [
+            {
+              aws.enable = true;
+              git.enable = true;
+            }
+          ];
+        };
+        "jo-nuc" = homeBuilder {
+          name = "jo";
+          inherit system pkgs;
+          modules = [
+            {
+              aws.enable = false;
+              git.enable = true;
+            }
+          ];
+        };
       };
       nixosConfigurations = {
         "home" = wslBuilder {
