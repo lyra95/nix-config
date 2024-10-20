@@ -54,6 +54,7 @@
     _lib = import ./lib;
     wslBuilder = _lib.wslBuilder inputs;
     homeBuilder = _lib.homeBuilder inputs;
+    nixosBuilder = _lib.nixosBuilder inputs;
   in
     {
       homeConfigurations."jo" = homeBuilder {
@@ -112,14 +113,35 @@
             }
           ];
         };
+        "jonuc" = nixosBuilder {
+          hostName = "jonuc";
+          inherit system pkgs;
+          defaultUserName = "jo";
+          modules = [
+            ./machines/nuc
+          ];
+        };
       };
     }
     // {
       nixosModules = rec {
+        tailscale = ./modules/nixos/tailscale;
+        xrdp = ./modules/nixos/xrdp;
+        cifs = ./modules/nixos/cifs;
+        k3s = ./modules/nixos/k3s;
+
         docker-desktop-fix = ./modules/wsl/docker-desktop-fix.nix;
         _wsl = {
           imports = [
             docker-desktop-fix
+          ];
+        };
+        _all = {
+          imports = [
+            tailscale
+            xrdp
+            cifs
+            k3s
           ];
         };
       };
