@@ -1,6 +1,6 @@
 {
   config,
-  pkgs,
+  hostName,
   ...
 }: {
   imports = [
@@ -21,6 +21,7 @@
   age.secrets.tailscale-authkey.file = ./tailscale-authkey.age;
   tailscale = {
     enable = true;
+    inherit hostName;
     authKeyFile = config.age.secrets.tailscale-authkey.path;
   };
 
