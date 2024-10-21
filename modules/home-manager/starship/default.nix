@@ -13,8 +13,14 @@
     programs.starship = {
       enable = config.starship.enable;
       enableBashIntegration = config.starship.enableBashIntegration;
+
+      # https://starship.rs/config/
       settings = {
         command_timeout = 10000;
+
+        nix_shell = {
+          heuristic = true;
+        };
 
         custom.kubecontext = lib.mkIf config.starship.enableBashIntegration {
           command = "kubectl config current-context | awk -F'/' '{print $NF}'";
