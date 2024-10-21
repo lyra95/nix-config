@@ -1,12 +1,14 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   ageEnabled = config.age != null;
 in {
   options = {
     git.enable = lib.mkEnableOption "enable git";
+    git.wsl = lib.mkEnableOption "use git.exe instead of git in symlinked repo";
   };
 
   config = lib.mkIf config.git.enable {
@@ -43,6 +45,22 @@ in {
         merge.conflictstyle = "diff3";
       };
     };
+
+    programs.git.package = lib.mkIf config.git.wsl (pkgs.writeShellApplication {
+      name = "git";
+      runtimeInputs = [pkgs.git pkgs.coreutils];
+      text = ''
+        is_windows_symlinked_repo() {
+        	[[ "$(readlink -f .)" =~ "/mnt/c/" ]]
+        }
+
+        if is_windows_symlinked_repo; then
+        	git.exe "$@"
+        else
+        	git "$@"
+        fi
+      '';
+    });
 
     age.secrets.github_ed25519 = lib.mkIf ageEnabled {
       file = ./github_ed25519.age;

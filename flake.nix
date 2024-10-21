@@ -66,6 +66,7 @@
             {
               aws.enable = true;
               git.enable = true;
+              git.wsl = true;
             }
           ];
         };
