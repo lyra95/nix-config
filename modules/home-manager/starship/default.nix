@@ -16,6 +16,8 @@
 
       # https://starship.rs/config/
       settings = {
+        command_timeout = 1000;
+
         nix_shell = {
           heuristic = true;
         };
