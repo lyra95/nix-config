@@ -148,45 +148,44 @@
       };
     }
     // {
-      nixosModules = rec {
-        tailscale = ./modules/nixos/tailscale;
-        xrdp = ./modules/nixos/xrdp;
-        cifs = ./modules/nixos/cifs;
-        k3s = ./modules/nixos/k3s;
-
-        docker-desktop-fix = ./modules/wsl/docker-desktop-fix.nix;
+      nixosModules = let
+        modules = {
+          tailscale = ./modules/nixos/tailscale;
+          xrdp = ./modules/nixos/xrdp;
+          cifs = ./modules/nixos/cifs;
+          k3s = ./modules/nixos/k3s;
+        };
+        wslModules = {
+          docker-desktop-fix = ./modules/wsl/docker-desktop-fix.nix;
+        };
         _wsl = {
-          imports = [
-            docker-desktop-fix
-          ];
+          imports = builtins.attrValues wslModules;
         };
         _all = {
-          imports = [
-            tailscale
-            xrdp
-            cifs
-            k3s
-          ];
+          imports = builtins.attrValues modules;
         };
-      };
-      homeManagerModules = rec {
-        aws = ./modules/home-manager/aws;
-        git = ./modules/home-manager/git;
-        gitui = ./modules/home-manager/gitui;
-        starship = ./modules/home-manager/starship;
-        k8s = ./modules/home-manager/k8s.nix;
-        nvim = ./modules/home-manager/nvim.nix;
+      in
+        modules
+        // wslModules
+        // {
+          default = _all;
+          wsl = _wsl;
+        };
+      homeManagerModules = let
+        modules = {
+          aws = ./modules/home-manager/aws;
+          git = ./modules/home-manager/git;
+          gitui = ./modules/home-manager/gitui;
+          starship = ./modules/home-manager/starship;
+          k8s = ./modules/home-manager/k8s.nix;
+          nvim = ./modules/home-manager/nvim.nix;
+        };
+
         _all = {
-          imports = [
-            aws
-            git
-            gitui
-            starship
-            k8s
-            nvim
-          ];
+          imports = builtins.attrValues modules;
         };
-      };
+      in
+        modules // {default = _all;};
     }
     // flake-utils.lib.eachDefaultSystem (system: let
       pkgs = pkgsBuilder system;

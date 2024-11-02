@@ -24,7 +24,7 @@ inputs @ {
     wsl = {
       imports = [
         nixos-wsl.nixosModules.wsl
-        self.nixosModules._wsl
+        self.nixosModules.wsl
       ];
       wsl.enable = true;
       wsl.defaultUser = userName;

@@ -13,7 +13,7 @@ inputs @ {
 }: let
   coreModules = {
     age = agenix.homeManagerModules.default;
-    importAll = self.homeManagerModules._all;
+    importAll = self.homeManagerModules.default;
     nvim = {
       nvim.pkg = nvim.packages.${system}.default;
       nvim.enableBashIntegration = true;

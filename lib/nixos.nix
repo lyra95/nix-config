@@ -68,7 +68,7 @@ inputs @ {
 
     importAll = {
       imports = [
-        self.nixosModules._all
+        self.nixosModules.default
       ];
     };
   };
