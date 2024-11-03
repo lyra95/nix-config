@@ -25,6 +25,7 @@ in {
         last = "show HEAD";
         oops = "commit -a --amend --no-edit";
         fp = "push --force";
+        pu = "!git push --set-upstream origin \"$(git rev-parse --abbrev-ref HEAD)\"";
         ig = "!vim \"$(git rev-parse --show-toplevel)/.gitignore\"";
         gc-all = "gc -q --prune --aggressive --keep-largest-pack --force";
       };
