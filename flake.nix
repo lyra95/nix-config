@@ -31,9 +31,6 @@
 
     nvim = {
       url = "github:lyra95/nvim/main";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.systems.follows = "systems";
     };
   };
 
