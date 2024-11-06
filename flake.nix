@@ -154,6 +154,7 @@
         };
         wslModules = {
           docker-desktop-fix = ./modules/wsl/docker-desktop-fix.nix;
+          vscode = ./modules/wsl/vscode.nix;
         };
         _wsl = {
           imports = builtins.attrValues wslModules;

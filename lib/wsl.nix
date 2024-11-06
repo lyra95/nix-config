@@ -30,6 +30,8 @@ inputs @ {
       wsl.defaultUser = userName;
       wsl.wslConf.network.hostname = name;
 
+      vscode-remote-workaround.enable = true;
+
       programs.bash.interactiveShellInit = ''
         wsl_to_windows_path() {
                 local wsl_path
