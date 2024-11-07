@@ -64,6 +64,7 @@
               aws.enable = true;
               git.enable = true;
               git.wsl = true;
+              rclone.enable = true;
             }
           ];
         };
@@ -177,6 +178,7 @@
           starship = ./modules/home-manager/starship;
           k8s = ./modules/home-manager/k8s.nix;
           nvim = ./modules/home-manager/nvim.nix;
+          rclone = ./modules/home-manager/rclone;
         };
 
         _all = {
