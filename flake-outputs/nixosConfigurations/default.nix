@@ -55,7 +55,7 @@ in {
     inherit system pkgs;
     defaultUserName = "jo";
     modules = [
-      ./machines/nuc
+      ../../machines/nuc
     ];
   };
 }

@@ -35,13 +35,20 @@
       url = "github:numtide/devshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    pre-commit = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs-stable.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
+    self,
     nixpkgs,
     flake-utils,
     nvim,
     devshell,
+    pre-commit,
     ...
   }:
     {
@@ -54,6 +61,16 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       formatter = pkgs.alejandra;
+
+      checks = {
+        pre-commit = pre-commit.lib.${system}.run {
+          src = ./.;
+          hooks = {
+            alejandra.enable = true;
+            alejandra.package = pkgs.alejandra;
+          };
+        };
+      };
 
       devShells.default = let
         mkShell =
@@ -71,7 +88,15 @@
             }
           ];
 
-          packages = [pkgs.alejandra nvim.packages."${system}".default];
+          devshell.startup."pre-commit".text = self.checks.${system}.pre-commit.shellHook;
+
+          packages =
+            [
+              pkgs.alejandra
+              nvim.packages."${system}".default
+            ]
+            ++ self.checks.${system}.pre-commit.enabledPackages;
+
           commands = [
             {
               help = "run formatter";
