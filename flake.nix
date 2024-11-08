@@ -37,158 +37,17 @@
   outputs = inputs @ {
     nixpkgs,
     flake-utils,
-    agenix,
-    home-manager,
     nvim,
     ...
-  }: let
-    system = "x86_64-linux";
-    # https://discourse.nixos.org/t/using-nixpkgs-legacypackages-system-vs-import/17462/8
-    # import vs legacyPackages
-    # the latter has performance gain
-    pkgsBuilder = system: nixpkgs.legacyPackages.${system};
-    pkgs = pkgsBuilder system;
-    _lib = import ./lib;
-    wslBuilder = _lib.wslBuilder inputs;
-    homeBuilder = _lib.homeBuilder inputs;
-    nixosBuilder = _lib.nixosBuilder inputs;
-  in
-    # todo: add check 1. eval nix expression test 2. vm test
+  }:
     {
-      homeConfigurations = {
-        "jo" = homeBuilder {
-          name = "jo";
-          inherit system pkgs;
-          modules = [
-            {
-              aws.enable = true;
-              git.enable = true;
-              git.wsl = true;
-              rclone.enable = true;
-            }
-          ];
-        };
-        "jo-nuc" = homeBuilder {
-          name = "jo";
-          inherit system pkgs;
-          modules = [
-            {
-              aws.enable = false;
-              git.enable = true;
-
-              home.packages = [pkgs.k9s];
-              programs.bash = {
-                shellAliases = {
-                  k = "kubectl";
-                };
-                sessionVariables = {
-                  KUBECONFIG = "/etc/rancher/k3s/k3s.yaml";
-                };
-              };
-            }
-          ];
-        };
-      };
-      nixosConfigurations = {
-        "home" = wslBuilder {
-          name = "home";
-          inherit system;
-          userName = "jo";
-          modules = [
-            {
-              wsl.docker-desktop.enable = true;
-              fix.docker-desktop.enable = true;
-
-              # This value determines the NixOS release from which the default
-              # settings for stateful data, like file locations and database versions
-              # on your system were taken. It's perfectly fine and recommended to leave
-              # this value at the release version of the first install of this system.
-              # Before changing this value read the documentation for this option
-              # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-              system.stateVersion = "23.11"; # Did you read the comment?
-            }
-          ];
-        };
-        "dell" = wslBuilder {
-          name = "dell";
-          inherit system;
-          userName = "jo";
-          modules = [
-            {
-              # todos: podman setup
-              wsl.docker-desktop.enable = false;
-
-              system.stateVersion = "23.11";
-            }
-          ];
-        };
-        "work" = wslBuilder {
-          name = "work";
-          inherit system;
-          userName = "jo";
-          modules = [
-            {
-              wsl.docker-desktop.enable = true;
-              fix.docker-desktop.enable = true;
-
-              system.stateVersion = "23.11";
-            }
-          ];
-        };
-        "jonuc" = nixosBuilder {
-          hostName = "jonuc";
-          inherit system pkgs;
-          defaultUserName = "jo";
-          modules = [
-            ./machines/nuc
-          ];
-        };
-      };
-    }
-    // {
-      nixosModules = let
-        modules = {
-          tailscale = ./modules/nixos/tailscale;
-          xrdp = ./modules/nixos/xrdp;
-          cifs = ./modules/nixos/cifs;
-          k3s = ./modules/nixos/k3s;
-        };
-        wslModules = {
-          docker-desktop-fix = ./modules/wsl/docker-desktop-fix.nix;
-          vscode = ./modules/wsl/vscode.nix;
-        };
-        _wsl = {
-          imports = builtins.attrValues wslModules;
-        };
-        _all = {
-          imports = builtins.attrValues modules;
-        };
-      in
-        modules
-        // wslModules
-        // {
-          default = _all;
-          wsl = _wsl;
-        };
-      homeManagerModules = let
-        modules = {
-          aws = ./modules/home-manager/aws;
-          git = ./modules/home-manager/git;
-          gitui = ./modules/home-manager/gitui;
-          starship = ./modules/home-manager/starship;
-          k8s = ./modules/home-manager/k8s.nix;
-          nvim = ./modules/home-manager/nvim.nix;
-          rclone = ./modules/home-manager/rclone;
-        };
-
-        _all = {
-          imports = builtins.attrValues modules;
-        };
-      in
-        modules // {default = _all;};
+      homeConfigurations = import ./flake-outputs/homeConfigurations inputs;
+      homeManagerModules = import ./flake-outputs/homeManagerModules.nix inputs;
+      nixosConfigurations = import ./flake-outputs/nixosConfigurations inputs;
+      nixosModules = import ./flake-outputs/nixosModules.nix inputs;
     }
     // flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = pkgsBuilder system;
+      pkgs = nixpkgs.legacyPackages.${system};
     in {
       formatter = pkgs.alejandra;
       devShells.default = pkgs.mkShell {packages = [nvim.packages."${system}".default];};

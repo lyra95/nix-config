@@ -1,4 +1,4 @@
-inputs @ {
+{
   self,
   nixpkgs,
   nixos-wsl,
