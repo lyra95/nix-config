@@ -73,7 +73,6 @@
       "inputs": {
         "nixpkgs": [
           "nvim",
-          "nixvim",
           "nixpkgs"
         ]
       },
@@ -464,7 +463,10 @@
     },
     "nixvim": {
       "inputs": {
-        "devshell": "devshell_2",
+        "devshell": [
+          "nvim",
+          "devshell"
+        ],
         "flake-compat": "flake-compat_2",
         "flake-parts": "flake-parts",
         "git-hooks": "git-hooks",
@@ -517,17 +519,18 @@
     },
     "nvim": {
       "inputs": {
+        "devshell": "devshell_2",
         "flake-utils": "flake-utils_2",
         "nixpkgs": "nixpkgs_2",
         "nixvim": "nixvim",
         "systems": "systems_2"
       },
       "locked": {
-        "lastModified": 1730668507,
-        "narHash": "sha256-u2DTQAIaGApCz/vwbMniftBNMr/Aa8RdTzVhXt/CrLU=",
+        "lastModified": 1732786707,
+        "narHash": "sha256-NW46DMDVExfej6Sd5GRyGtZ2OW04D+DHq2pZxYk5PeY=",
         "owner": "lyra95",
         "repo": "nvim",
-        "rev": "e2f4ce9d4de950ca6901dee7b799fb8c4d16d243",
+        "rev": "ea80436642c7d60b2b29bcfb3d3ed60d9d6015ae",
         "type": "github"
       },
       "original": {
