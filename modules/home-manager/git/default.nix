@@ -52,7 +52,7 @@ in {
       runtimeInputs = [pkgs.git pkgs.coreutils];
       text = ''
         is_windows_symlinked_repo() {
-        	[[ "$(readlink -f .)" =~ "/mnt/c/" ]]
+        	[[ "$(readlink -f .)" =~ /mnt/(c|d|e)($|/) ]]
         }
 
         if is_windows_symlinked_repo; then
