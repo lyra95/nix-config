@@ -44,6 +44,7 @@
       environment.systemPackages = with pkgs; [git vim];
 
       environment.variables.EDITOR = "vim";
+      bug-fix.fix-logind-race-condition = true;
     };
 
     superUser = {

@@ -17,6 +17,8 @@
         "flakes"
       ];
 
+      bug-fix.fix-logind-race-condition = true;
+
       environment.systemPackages = with pkgs; [git vim file];
       environment.variables.EDITOR = "vim";
     };
@@ -25,6 +27,7 @@
       imports = [
         nixos-wsl.nixosModules.wsl
         self.nixosModules.wsl
+        self.nixosModules.bug-fix
       ];
       wsl.enable = true;
       wsl.defaultUser = userName;

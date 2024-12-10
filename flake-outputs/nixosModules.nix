@@ -4,6 +4,7 @@
     xrdp = ../modules/nixos/xrdp;
     cifs = ../modules/nixos/cifs;
     k3s = ../modules/nixos/k3s;
+    bug-fix = ../modules/nixos/bug-fix;
   };
   wslModules = {
     docker-desktop-fix = ../modules/wsl/docker-desktop-fix.nix;
