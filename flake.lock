@@ -400,11 +400,11 @@
         "systems": "systems_2"
       },
       "locked": {
-        "lastModified": 1741342806,
-        "narHash": "sha256-Z6Ch4sxTBInC7hSIdlzDiAW3ZfQxzc/gYWPmC0SRhKc=",
+        "lastModified": 1741343993,
+        "narHash": "sha256-kEu7e83h6KW3TWwjKQPTEQFF+S6hXLhsZmp2xeWf0h4=",
         "owner": "lyra95",
         "repo": "nvim",
-        "rev": "5d790b17529a51ad69b86c343e1a789d9db217d0",
+        "rev": "22db89abe2c1a143a46d813d02e62e8940627ea7",
         "type": "github"
       },
       "original": {
