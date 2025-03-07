@@ -13,7 +13,6 @@
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
-      inputs.flake-utils.follows = "flake-utils";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -38,7 +37,6 @@
 
     pre-commit = {
       url = "github:cachix/git-hooks.nix";
-      inputs.nixpkgs-stable.follows = "nixpkgs";
     };
   };
 
