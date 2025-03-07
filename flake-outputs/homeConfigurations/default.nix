@@ -12,6 +12,8 @@ in let
         git.enable = true;
         git.wsl = true;
         rclone.enable = true;
+
+        home.packages = [pkgs.kind];
       }
     ];
   };
