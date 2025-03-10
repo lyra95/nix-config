@@ -7,6 +7,7 @@
     k8s = ../modules/home-manager/k8s.nix;
     nvim = ../modules/home-manager/nvim.nix;
     rclone = ../modules/home-manager/rclone;
+    kind = ../modules/home-manager/kind.nix;
   };
 
   all = {
