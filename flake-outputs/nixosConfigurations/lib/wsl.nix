@@ -41,6 +41,13 @@
         }
       '';
     };
+
+    container = {
+      podman = {
+        enable = true;
+        user = userName;
+      };
+    };
   };
 in
   nixpkgs.lib.nixosSystem {

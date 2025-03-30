@@ -8,6 +8,7 @@
   };
   wslModules = {
     vscode = ../modules/wsl/vscode.nix;
+    podman = ../modules/wsl/podman.nix;
   };
   wsl = {
     imports = builtins.attrValues wslModules;
