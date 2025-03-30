@@ -11,8 +11,7 @@ in {
     userName = "jo";
     modules = [
       {
-        wsl.docker-desktop.enable = true;
-        fix.docker-desktop.enable = true;
+        wsl.docker-desktop.enable = false;
 
         # This value determines the NixOS release from which the default
         # settings for stateful data, like file locations and database versions
@@ -43,8 +42,7 @@ in {
     userName = "jo";
     modules = [
       {
-        wsl.docker-desktop.enable = true;
-        fix.docker-desktop.enable = true;
+        wsl.docker-desktop.enable = false;
 
         system.stateVersion = "23.11";
       }

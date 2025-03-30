@@ -7,7 +7,6 @@
     bug-fix = ../modules/nixos/bug-fix;
   };
   wslModules = {
-    docker-desktop-fix = ../modules/wsl/docker-desktop-fix.nix;
     vscode = ../modules/wsl/vscode.nix;
   };
   wsl = {
