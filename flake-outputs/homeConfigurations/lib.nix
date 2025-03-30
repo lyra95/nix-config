@@ -39,6 +39,7 @@
         jq
         yq-go
         hex
+        nix-search-cli
       ];
 
       starship = {
