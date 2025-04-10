@@ -8,6 +8,7 @@ in let
     inherit system pkgs;
     modules = [
       {
+        home.packages = [pkgs.stu];
         aws.enable = true;
         git.enable = true;
         git.wsl = true;
