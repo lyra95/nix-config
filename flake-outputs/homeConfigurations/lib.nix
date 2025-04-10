@@ -89,7 +89,7 @@
         enable = true;
         enableBashIntegration = true;
         git = true;
-        icons = true;
+        icons = "auto";
       };
 
       # modern grep
