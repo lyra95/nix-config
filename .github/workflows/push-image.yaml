@@ -1,0 +1,24 @@
+name: Push Docker Image
+
+on:
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: ghcr.io/lyra95/ephemeral-nix
+
+jobs:
+  
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        env:
+          TAG: ${{ github.sha }}
+        run: |
+          docker build -t $IMAGE_NAME/$TAG .
+          docker tag $IMAGE_NAME/$TAG $IMAGE_NAME:latest
+          docker push $IMAGE_NAME/$TAG
+
