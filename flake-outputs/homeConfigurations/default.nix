@@ -38,10 +38,33 @@ in let
       }
     ];
   };
+
+  container = homeBuilder {
+    name = "root";
+    inherit system pkgs;
+    modules = [
+      (
+        {lib, ...}: let
+          options = ["aws" "git" "gitui" "rclone" "kind" "k8s" "kind"];
+          disable = options:
+            builtins.listToAttrs (map (name: {
+                name = name;
+                value = {enable = lib.mkForce false;};
+              })
+              options);
+        in
+          (disable options)
+          // {
+            home.homeDirectory = lib.mkForce "/root";
+          }
+      )
+    ];
+  };
 in {
   # hostname = homeConfiguration
   "work" = work;
   "home" = work;
   "dell" = work;
   "jonuc" = nuc;
+  "container" = container;
 }
