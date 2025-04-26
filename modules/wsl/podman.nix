@@ -26,6 +26,8 @@ in {
 
     systemd.services.chmod-podman-socket = {
       wantedBy = ["multi-user.target"];
+      after = ["x2droot.sock.mount" "x2duser.sock.mount"];
+      requires = ["x2droot.sock.mount" "x2duser.sock.mount"];
       serviceConfig = {
         Type = "oneshot";
         ExecStart = let
