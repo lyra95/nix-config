@@ -52,6 +52,7 @@
       programs.bash = {
         enable = true;
         historyControl = ["erasedups" "ignoredups" "ignorespace"];
+        historyIgnore = ["ls" "cd" "exit"];
       };
 
       # file explorer, Windows Terminal (>= v1.22.2362.0)
