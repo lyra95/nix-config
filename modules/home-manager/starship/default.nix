@@ -23,8 +23,8 @@
         };
 
         custom.kubecontext = lib.mkIf config.starship.enableBashIntegration {
-          command = "kubectl config current-context | awk -F'/' '{print $NF}'";
-          when = "kubectl config current-context &> /dev/null";
+          command = "yq '.current-context' $KUBECONFIG | awk -F'/' '{print $NF}'";
+          when = "yq '.current-context' $KUBECONFIG | grep -qP '\\S'";
           shell = "bash";
           style = "bold blue";
           format = "[⎈ $output ]($style)";
