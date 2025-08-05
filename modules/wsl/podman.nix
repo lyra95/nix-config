@@ -24,10 +24,15 @@ in {
 
     environment.variables.DOCKER_HOST = "unix://${socketPath}";
 
-    systemd.services.chmod-podman-socket = {
+    systemd.services.chmod-podman-socket = let
+      units = [
+        "mnt-wsl-podman\\x2dsockets-podman\\x2dmachine\\x2ddefault-podman\\x2droot.sock.mount"
+        "mnt-wsl-podman\\x2dsockets-podman\\x2dmachine\\x2ddefault-podman\\x2duser.sock.mount"
+      ];
+    in {
       wantedBy = ["multi-user.target"];
-      after = ["x2droot.sock.mount" "x2duser.sock.mount"];
-      requires = ["x2droot.sock.mount" "x2duser.sock.mount"];
+      after = units;
+      requires = units;
       serviceConfig = {
         Type = "oneshot";
         ExecStart = let
