@@ -39,9 +39,11 @@
 
       systemd.user.services."gen-eks-conf" = {
         Unit = {
-          scription = "generate eks kubeconfig file";
+          Description = "generate eks kubeconfig file";
           Documentation = "man:gen-eks-conf";
-          Requires = ["agenix"];
+          Requires = ["agenix.service"];
+          After = ["agenix.service"];
+          ConditionPathExists = "!${config.home.homeDirectory}/.eks.kubeconfig";
         };
 
         Install = {
@@ -55,11 +57,6 @@
             runtimeEnv.CONF_PATH = "${config.home.homeDirectory}/.eks.kubeconfig";
             text = ''
               #!/usr/bin/env bash
-
-              if [ -e "$CONF_PATH" ]; then
-                exit 0;
-              fi
-
               aws eks update-kubeconfig --region ap-northeast-2 --name eks-dev --kubeconfig "$CONF_PATH";
             '';
           };

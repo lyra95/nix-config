@@ -32,6 +32,7 @@
       wsl.enable = true;
       wsl.defaultUser = userName;
       wsl.wslConf.network.hostname = name;
+      wsl.wslConf.boot.initTimeout = 60000;
 
       vscode-remote-workaround.enable = true;
 
