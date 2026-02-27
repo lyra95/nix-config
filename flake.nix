@@ -9,7 +9,7 @@
       inputs.systems.follows = "systems";
     };
 
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
 
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
@@ -24,11 +24,17 @@
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nvim.url = "github:lyra95/nvim/main";
+    nvim = {
+      url = "github:lyra95/nvim/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+      inputs.devshell.follows = "devshell";
+      inputs.flake-utils.follows = "flake-utils";
+    };
 
     devshell = {
       url = "github:numtide/devshell";
@@ -37,6 +43,7 @@
 
     pre-commit = {
       url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
