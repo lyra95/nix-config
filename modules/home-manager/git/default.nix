@@ -15,10 +15,10 @@ in {
     # todo: add gpg signing
     programs.git = {
       enable = true;
-      userName = "jo";
-      userEmail = "95hyouka@gmail.com";
+      settings.user.name = "jo";
+      settings.user.email = "95hyouka@gmail.com";
 
-      aliases = {
+      settings.aliases = {
         # Prettier `git log`
         lg = "log --color --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
         rb = "rebase --interactive";
@@ -30,20 +30,21 @@ in {
         gc-all = "gc -q --prune --aggressive --keep-largest-pack --force";
       };
 
-      delta = {
-        enable = true;
-        options = {
-          navigate = true;
-          line-numbers = true;
-          hyperlinks = true;
-          side-by-side = true;
-          colorMoved = "default";
-        };
-      };
-
-      extraConfig = {
+      settings.extraConfig = {
         init.defaultBranch = "main";
         merge.conflictstyle = "diff3";
+      };
+    };
+
+    programs.delta = {
+      enable = true;
+      enableGitIntegration = true;
+      options = {
+        navigate = true;
+        line-numbers = true;
+        hyperlinks = true;
+        side-by-side = true;
+        colorMoved = "default";
       };
     };
 
@@ -69,6 +70,7 @@ in {
 
     programs.ssh = lib.mkIf ageEnabled {
       enable = true;
+      enableDefaultConfig = false;
       matchBlocks."github.com" = {
         user = "jo";
         hostname = "github.com";
