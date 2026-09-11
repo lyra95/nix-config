@@ -58,6 +58,7 @@
       # file explorer, Windows Terminal (>= v1.22.2362.0)
       programs.yazi = {
         enable = true;
+        shellWrapperName = "yy";
         enableBashIntegration = true;
       };
 
