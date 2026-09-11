@@ -71,11 +71,13 @@ in {
     programs.ssh = lib.mkIf ageEnabled {
       enable = true;
       enableDefaultConfig = false;
-      matchBlocks."github.com" = {
-        user = "jo";
-        hostname = "github.com";
-        identityFile = "${config.age.secrets.github_ed25519.path}";
-        extraOptions."PreferredAuthentications" = "publickey";
+      settings = {
+        "github.com" = {
+          User = "jo";
+          Hostname = "github.com";
+          IdentityFile = "${config.age.secrets.github_ed25519.path}";
+          PreferredAuthentications = "publickey";
+        };
       };
     };
   };
