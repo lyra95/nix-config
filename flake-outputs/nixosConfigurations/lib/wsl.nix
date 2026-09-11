@@ -17,6 +17,8 @@
         "flakes"
       ];
 
+      nixpkgs.config.allowUnfree = true;
+
       bug-fix.fix-logind-race-condition = true;
 
       environment.systemPackages = with pkgs; [git vim file];

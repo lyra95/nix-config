@@ -1,14 +1,17 @@
 inputs @ {nixpkgs, ...}: let
   system = "x86_64-linux";
   homeBuilder = import ./lib.nix inputs;
-  pkgs = nixpkgs.legacyPackages.${system};
+  pkgs = import nixpkgs {
+    inherit system;
+    config.allowUnfree = true;
+  };
 in let
   work = homeBuilder {
     name = "jo";
     inherit system pkgs;
     modules = [
       {
-        home.packages = [pkgs.stu];
+        home.packages = [pkgs.stu pkgs.claude-code];
         aws.enable = true;
         git.enable = true;
         git.wsl = true;
