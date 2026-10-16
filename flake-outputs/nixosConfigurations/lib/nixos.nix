@@ -52,7 +52,7 @@
         isNormalUser = true;
         description = "default user";
         extraGroups = ["networkmanager" "wheel"];
-        packages = with pkgs; [kate];
+        packages = with pkgs; [kdePackages.kate];
       };
       security.sudo.extraRules = [
         {
