@@ -27,10 +27,7 @@
     };
     nvim = inputs.nixvim.legacyPackages.${system}.makeNixvimWithModule module;
   in {
-    packages = {
-      inherit nvim;
-      default = nvim;
-    };
+    packages = {inherit nvim;};
     checks.nvim =
       (inputs.nixvim.lib.${system}.check.mkTestDerivationFromNixvimModule module).overrideAttrs
       (old: {
