@@ -9,11 +9,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    devshell = {
-      url = "github:numtide/devshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nix-homebrew = {
       url = "github:zhaofengli-wip/nix-homebrew";
     };
@@ -40,11 +35,5 @@
     };
   };
 
-  outputs = inputs @ {nixpkgs, ...}: let
-    lib = nixpkgs.lib;
-  in
-    lib.attrsets.mergeAttrsList [
-      (import ./flake-outputs/nix-darwin inputs)
-      (import ./flake-outputs/devShell inputs)
-    ];
+  outputs = inputs: import ./flake-outputs/nix-darwin inputs;
 }
