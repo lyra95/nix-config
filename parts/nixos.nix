@@ -4,31 +4,26 @@
   lib,
   withSystem,
   ...
-}: let
-  inherit (config.flake) nixosModules;
-in {
+}: {
   flake.nixosModules = {
     tailscale = ../modules/nixos/tailscale;
     xrdp = ../modules/nixos/xrdp;
     cifs = ../modules/nixos/cifs;
     k3s = ../modules/nixos/k3s;
     bug-fix = ../modules/nixos/bug-fix;
-    vscode = ../modules/wsl/vscode.nix;
+    vscode = lib.modules.importApply ../modules/wsl/vscode.nix {inherit (inputs) vscode-server;};
     podman = ../modules/wsl/podman.nix;
 
-    default = {
-      imports = with nixosModules; [bug-fix cifs k3s tailscale xrdp];
-    };
-    wsl = {
-      imports = with nixosModules; [podman vscode];
-    };
+    default = ../modules/nixos;
+    base = ../modules/nixos/base.nix;
+    wsl = lib.modules.importApply ../modules/wsl/default.nix {inherit (inputs) vscode-server;};
   };
 
   perSystem = {system, ...}: {
-    checks = lib.optionalAttrs (system == "x86_64-linux") (
+    checks = (
       lib.mapAttrs' (name: host:
         lib.nameValuePair "nixos-${name}" host.config.system.build.toplevel)
-      config.flake.nixosConfigurations
+      (lib.filterAttrs (_: host: host.pkgs.stdenv.hostPlatform.system == system) config.flake.nixosConfigurations)
     );
   };
 
@@ -36,23 +31,15 @@ in {
     lib.genAttrs ["home" "dell" "work"] (name:
       inputs.nixpkgs.lib.nixosSystem {
         modules = [
-          {
-            wsl.docker-desktop.enable = false;
-            system.stateVersion = "23.11";
-          }
-          (import ./profiles/wsl.nix {
-            inherit inputs nixosModules name;
+          (import ../modules/wsl/profile.nix {
+            inherit inputs name;
             system = "x86_64-linux";
             userName = "jo";
           })
         ];
       })
     // {
-      jonuc = withSystem "x86_64-linux" ({
-        pkgs,
-        system,
-        ...
-      }: let
+      jonuc = withSystem "x86_64-linux" ({system, ...}: let
         hostName = "jonuc";
         defaultUserName = "jo";
       in
@@ -61,8 +48,8 @@ in {
           specialArgs = {inherit hostName defaultUserName;};
           modules = [
             ../machines/nuc
-            (import ./profiles/nixos.nix {
-              inherit inputs nixosModules pkgs hostName defaultUserName;
+            (import ../modules/nixos/profiles/default.nix {
+              inherit inputs hostName defaultUserName;
             })
           ];
         });

@@ -20,10 +20,10 @@
         modules =
           modules
           ++ [
-            (import ./profiles/home.nix {
-              inherit inputs inputs' name stateVersion;
+            (import ../modules/home-manager/profiles {
+              inherit inputs name stateVersion;
+              homeManagerPackage = inputs'.home-manager.packages.default;
               nvimPackage = perSystem.config.packages.nvim;
-              inherit (config.flake) homeModules;
             })
           ];
       });
@@ -34,14 +34,7 @@
       system = "x86_64-linux";
       stateVersion = "24.05";
     } [
-      ({pkgs, ...}: {
-        home.packages = [pkgs.stu pkgs.claude-code];
-        aws.enable = true;
-        git.enable = true;
-        git.wsl = true;
-        rclone.enable = true;
-        kind.enable = true;
-      })
+      ../modules/home-manager/profiles/work.nix
     ];
 in {
   imports = [inputs.home-manager.flakeModules.default];
@@ -56,9 +49,10 @@ in {
     rclone = ../modules/home-manager/rclone;
     kind = ../modules/home-manager/kind.nix;
 
-    default = {
-      imports = with config.flake.homeModules; [aws git gitui k8s kind nvim rclone starship];
-    };
+    default = lib.modules.importApply ../modules/home-manager/default.nix {inherit (inputs) agenix;};
+    shell = ../modules/home-manager/shell.nix;
+    modern-cli = ../modules/home-manager/modern-cli.nix;
+    darwin = ../modules/home-manager/darwin.nix;
   };
 
   # Preserve the existing public output alongside Home Manager's homeModules.
@@ -92,15 +86,7 @@ in {
         system = "x86_64-linux";
         stateVersion = "24.05";
       } [
-        ({pkgs, ...}: {
-          aws.enable = false;
-          git.enable = true;
-          home.packages = [pkgs.k9s];
-          programs.bash = {
-            shellAliases.k = "kubectl";
-            sessionVariables.KUBECONFIG = "/etc/rancher/k3s/k3s.yaml";
-          };
-        })
+        ../modules/home-manager/profiles/k3s.nix
       ];
 
     container =
@@ -109,15 +95,7 @@ in {
         system = "x86_64-linux";
         stateVersion = "24.05";
       } [
-        {
-          aws.enable = lib.mkForce false;
-          git.enable = lib.mkForce false;
-          gitui.enable = lib.mkForce false;
-          rclone.enable = lib.mkForce false;
-          kind.enable = lib.mkForce false;
-          k8s.enable = lib.mkForce false;
-          home.homeDirectory = lib.mkForce "/root";
-        }
+        ../modules/home-manager/profiles/container.nix
       ];
   };
 }

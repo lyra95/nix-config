@@ -4,48 +4,46 @@
   pkgs,
   ...
 }: let
-  machinePath = "/mnt/wsl/podman-sockets/podman-machine-default";
-  socketPath = "${machinePath}/podman-root.sock";
   cfg = config.podman;
 in {
   options.podman = {
-    enable = lib.mkEnableOption "Enable the docker client with podman backend";
+    enable = lib.mkEnableOption "the Docker client with a shared Podman backend";
     user = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;
-      description = "user to have access to the docker client";
+      description = "User allowed to connect to the Podman socket.";
+    };
+    socketPath = lib.mkOption {
+      type = lib.types.str;
+      default = "/mnt/wsl/podman-sockets/podman-machine-default/podman-root.sock";
+      description = "Path to the Unix socket shared by Podman Desktop.";
     };
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [docker-client];
-
+    environment.systemPackages = [pkgs.docker-client];
     users.groups.podman.members = lib.mkIf (cfg.user != null) [cfg.user];
+    environment.variables.DOCKER_HOST = "unix://${cfg.socketPath}";
 
-    environment.variables.DOCKER_HOST = "unix://${socketPath}";
-
-    systemd.services.chmod-podman-socket = let
-      units = [
-        "mnt-wsl-podman\\x2dsockets-podman\\x2dmachine\\x2ddefault-podman\\x2droot.sock.mount"
-        "mnt-wsl-podman\\x2dsockets-podman\\x2dmachine\\x2ddefault-podman\\x2duser.sock.mount"
-      ];
-    in {
+    # The external WSL machine may start after NixOS or replace its socket.
+    # Watch the directory rather than requiring transient mount unit names.
+    systemd.paths.chmod-podman-socket = {
       wantedBy = ["multi-user.target"];
-      after = units;
-      requires = units;
+      pathConfig.PathChanged = builtins.dirOf cfg.socketPath;
+    };
+    systemd.services.chmod-podman-socket = {
+      wantedBy = ["multi-user.target"];
+      unitConfig.ConditionPathIsSocket = cfg.socketPath;
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = let
-          app = pkgs.writeShellApplication {
-            name = "chmod-podman-socket";
-            runtimeInputs = [pkgs.coreutils];
-            text = ''
-              chown :podman ${socketPath}
-              chmod g+r ${socketPath}
-            '';
-          };
-        in
-          lib.getExe app;
+        ExecStart = lib.getExe (pkgs.writeShellApplication {
+          name = "chmod-podman-socket";
+          runtimeInputs = [pkgs.coreutils];
+          text = ''
+            chown :podman ${lib.escapeShellArg cfg.socketPath}
+            chmod g+rw ${lib.escapeShellArg cfg.socketPath}
+          '';
+        });
       };
     };
   };

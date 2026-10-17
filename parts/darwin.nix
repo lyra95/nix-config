@@ -19,7 +19,8 @@ in {
       lib.setDefaultModuleLocation ../modules/darwin/homebrew/default.nix
       (import ../modules/darwin/homebrew profile inputs);
     aerospace = ../modules/darwin/aerospace;
-    sioyek = lib.modules.importApply ../modules/darwin/sioyek/default.nix profile;
+    sioyek = ../modules/darwin/sioyek;
+    default-apps = ../modules/darwin/default-apps.nix;
 
     default = {
       imports = with darwinModules; [system homebrew aerospace sioyek];
@@ -37,35 +38,7 @@ in {
   flake.darwinConfigurations.${profile.hostName} = inputs.nix-darwin.lib.darwinSystem {
     modules = [
       darwinModules.default
-      ({pkgs, ...}: {
-        networking.hostName = profile.hostName;
-
-        fonts.packages = [pkgs.d2coding];
-
-        environment.systemPackages = [
-          pkgs.vim
-          pkgs.git
-          pkgs.direnv
-          pkgs.home-manager
-          pkgs.uv
-        ];
-
-        system.primaryUser = profile.userName;
-
-        system.defaults.NSGlobalDomain.AppleShowAllExtensions = true;
-        system.defaults.NSGlobalDomain.AppleShowAllFiles = true;
-
-        system.defaults.screencapture.target = "clipboard";
-
-        nix.settings.experimental-features = "nix-command flakes";
-
-        security.pam.services.sudo_local.touchIdAuth = true;
-
-        system.defaults.finder = {
-          AppleShowAllExtensions = true;
-          AppleShowAllFiles = true;
-        };
-      })
+      (import ../modules/darwin/desktop.nix profile)
     ];
   };
 }

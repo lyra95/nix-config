@@ -30,7 +30,7 @@ in {
       settings.user.name = "jo";
       settings.user.email = "95hyouka@gmail.com";
 
-      settings.aliases = {
+      settings.alias = {
         # Prettier `git log`
         lg = "log --color --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
         rb = "rebase --interactive";
@@ -44,7 +44,7 @@ in {
 
       settings.push.autoSetupRemote = true;
 
-      settings.extraConfig = {
+      settings = {
         init.defaultBranch = "main";
         merge.conflictstyle = "diff3";
       };
@@ -87,7 +87,7 @@ in {
       enableDefaultConfig = false;
       settings = {
         "github.com" = {
-          User = "jo";
+          User = "git";
           Hostname = "github.com";
           IdentityFile = "${config.age.secrets.github_ed25519.path}";
           PreferredAuthentications = "publickey";

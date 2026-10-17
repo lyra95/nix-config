@@ -6,11 +6,13 @@
   options = {
     nvim.pkg = lib.mkOption {
       type = with lib.types; (nullOr package);
+      default = null;
       description = "The neovim package to use";
     };
 
     nvim.enableBashIntegration = lib.mkOption {
       type = lib.types.bool;
+      default = false;
       description = "Enable bash integration";
     };
   };

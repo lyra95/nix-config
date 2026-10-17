@@ -2,7 +2,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: {
   options = {
@@ -28,24 +27,11 @@
 
       users.groups.k3s.members = lib.mkIf (user != null) [config.k3s.user];
 
-      systemd.services.chmod-config = lib.mkIf (user != null) {
-        wantedBy = ["multi-user.target"];
-        after = ["k3s.service"];
-        wants = ["k3s.service"];
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = let
-            app = pkgs.writeShellApplication {
-              name = "chmod-config";
-              runtimeInputs = [pkgs.coreutils];
-              text = ''
-                chown :k3s /etc/rancher/k3s/k3s.yaml
-                chmod g+r /etc/rancher/k3s/k3s.yaml
-              '';
-            };
-          in
-            lib.getExe app;
-        };
-      };
+      # Let k3s apply permissions every time it writes or rotates kubeconfig.
+      # https://docs.k3s.io/cli/server#client
+      services.k3s.extraFlags = lib.optionals (user != null) [
+        "--write-kubeconfig-group=k3s"
+        "--write-kubeconfig-mode=0640"
+      ];
     });
 }
