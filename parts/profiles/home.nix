@@ -65,9 +65,6 @@
       home.sessionPath = ["$HOME/.local/bin"];
 
       programs.home-manager.enable = true;
-
-      # https://github.com/nix-community/home-manager/issues/355
-      systemd.user.startServices = lib.mkIf pkgs.stdenv.hostPlatform.isLinux "sd-switch";
     };
   };
   commonModules = {
