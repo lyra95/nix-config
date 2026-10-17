@@ -7,6 +7,14 @@
 }: let
   inherit (config.flake) nixosModules;
 in {
+  perSystem = {system, ...}: {
+    checks = lib.optionalAttrs (system == "x86_64-linux") (
+      lib.mapAttrs' (name: host:
+        lib.nameValuePair "nixos-${name}" host.config.system.build.toplevel)
+      config.flake.nixosConfigurations
+    );
+  };
+
   flake.nixosConfigurations =
     lib.genAttrs ["home" "dell" "work"] (name:
       inputs.nixpkgs.lib.nixosSystem {

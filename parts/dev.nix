@@ -11,6 +11,8 @@
   }: {
     formatter = pkgs.alejandra;
 
+    checks.devshell = config.devShells.default;
+
     pre-commit.settings.hooks.alejandra = {
       enable = true;
       package = pkgs.alejandra;
