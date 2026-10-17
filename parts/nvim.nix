@@ -17,7 +17,7 @@
     };
 
   perSystem = {system, ...}: let
-    pkgs = import inputs.nixpkgs-nvim {
+    pkgs = import inputs.nixpkgs {
       inherit system;
       config.allowUnfree = true;
     };

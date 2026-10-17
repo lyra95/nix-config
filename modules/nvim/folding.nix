@@ -60,6 +60,6 @@
     ";
 
     plugins.treesitter.enable = true;
-    plugins.treesitter.folding = true;
+    plugins.treesitter.folding.enable = true;
   };
 }

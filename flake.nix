@@ -9,12 +9,6 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
-    # Shared with Nixvim's search documentation input.
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-      inputs.systems.follows = "systems";
-    };
-
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     nixos-wsl = {
@@ -39,15 +33,11 @@
       inputs.flake-parts.follows = "flake-parts";
     };
 
-    # This Nixvim version requires packages removed from current nixos-unstable.
-    nixpkgs-nvim.url = "github:NixOS/nixpkgs";
-
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs-nvim";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.systems.follows = "systems";
-      inputs.nuschtosSearch.inputs.flake-utils.follows = "flake-utils";
     };
 
     devshell = {
