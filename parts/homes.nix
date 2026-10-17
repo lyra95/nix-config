@@ -7,6 +7,14 @@
 }: {
   imports = [inputs.home-manager.flakeModules.default];
 
+  perSystem = {system, ...}: {
+    checks = lib.optionalAttrs (system == "x86_64-linux") (
+      lib.mapAttrs' (name: home:
+        lib.nameValuePair "home-${name}" home.activationPackage)
+      config.flake.homeConfigurations
+    );
+  };
+
   flake.homeConfigurations = withSystem "x86_64-linux" (perSystem @ {
     system,
     inputs',
