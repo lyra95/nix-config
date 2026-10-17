@@ -12,9 +12,21 @@ in {
   };
 
   config = lib.mkIf config.git.enable {
+    assertions = [
+      {
+        assertion = config.age != null;
+        message = "age is not enabled";
+      }
+    ];
+
+    home.packages = with pkgs; [
+      git-lfs
+    ];
+
     # todo: add gpg signing
     programs.git = {
       enable = true;
+      lfs.enable = true;
       settings.user.name = "jo";
       settings.user.email = "95hyouka@gmail.com";
 

@@ -21,6 +21,26 @@ inputs @ {
     };
   };
   commonModules = {
+    ssh = {
+      programs.ssh = {
+        enableDefaultConfig = false;
+        settings = {
+          "*" = {
+            ForwardAgent = false;
+            AddKeysToAgent = "no";
+            Compression = false;
+            ServerAliveInterval = 0;
+            ServerAliveCountMax = 3;
+            HashKnownHosts = false;
+            UserKnownHostsFile = "~/.ssh/known_hosts";
+            ControlMaster = "no";
+            ControlPath = "~/.ssh/master-%r@%n:%p";
+            ControlPersist = "no";
+          };
+        };
+      };
+    };
+
     misc = {
       home.packages = with pkgs; [
         jq
@@ -137,7 +157,7 @@ in {
       [
         {
           imports = [
-            ./modules/git
+            ../../../modules/home-manager/git
           ];
           git.enable = true;
         }
