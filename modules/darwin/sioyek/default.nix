@@ -11,7 +11,7 @@ profile: {
   # for the whole launchd domain, bake it into sioyek's own wrapper.
   defaultPath = "/usr/bin:/bin:/usr/sbin:/sbin";
 
-  sioyekPath = ":/usr/local/bin";
+  sioyekPath = "/usr/local/bin";
 
   sioyek = pkgs.sioyek.overrideAttrs (old: {
     # nixpkgs installs sioyek's shaders and default configs into the app bundle's
