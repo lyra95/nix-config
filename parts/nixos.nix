@@ -40,7 +40,7 @@ in {
             wsl.docker-desktop.enable = false;
             system.stateVersion = "23.11";
           }
-          (import ./profiles/wsl.nix {
+          (import ../modules/wsl/profile.nix {
             inherit inputs nixosModules name;
             system = "x86_64-linux";
             userName = "jo";
@@ -61,7 +61,7 @@ in {
           specialArgs = {inherit hostName defaultUserName;};
           modules = [
             ../machines/nuc
-            (import ./profiles/nixos.nix {
+            (import ../modules/nixos/profiles/default.nix {
               inherit inputs nixosModules pkgs hostName defaultUserName;
             })
           ];

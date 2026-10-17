@@ -20,10 +20,10 @@
         modules =
           modules
           ++ [
-            (import ./profiles/home.nix {
-              inherit inputs inputs' name stateVersion;
+            (import ../modules/home-manager/profiles {
+              inherit inputs name stateVersion;
+              homeManagerPackage = inputs'.home-manager.packages.default;
               nvimPackage = perSystem.config.packages.nvim;
-              inherit (config.flake) homeModules;
             })
           ];
       });
@@ -56,9 +56,10 @@ in {
     rclone = ../modules/home-manager/rclone;
     kind = ../modules/home-manager/kind.nix;
 
-    default = {
-      imports = with config.flake.homeModules; [aws git gitui k8s kind nvim rclone starship];
-    };
+    default = ../modules/home-manager;
+    shell = ../modules/home-manager/shell.nix;
+    modern-cli = ../modules/home-manager/modern-cli.nix;
+    darwin = ../modules/home-manager/darwin.nix;
   };
 
   # Preserve the existing public output alongside Home Manager's homeModules.
