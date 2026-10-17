@@ -1,20 +1,14 @@
 {
-  self,
-  nixpkgs,
-  agenix,
-  vscode-server,
-  ...
-}: {
+  inputs,
+  nixosModules,
   hostName,
-  system,
   defaultUserName,
-  modules,
   pkgs,
 }: let
   coreModules = {
-    age = agenix.nixosModules.age;
+    age = inputs.agenix.nixosModules.age;
     vscode-server = {
-      imports = [vscode-server.nixosModules.default];
+      imports = [inputs.vscode-server.nixosModules.default];
       services.vscode-server.enable = true;
     };
 
@@ -74,17 +68,10 @@
 
     importAll = {
       imports = [
-        self.nixosModules.default
+        nixosModules.default
       ];
     };
   };
-in
-  nixpkgs.lib.nixosSystem {
-    specialArgs = {
-      inherit hostName defaultUserName;
-    };
-    inherit system;
-    modules =
-      modules
-      ++ (builtins.attrValues coreModules);
-  }
+in {
+  imports = builtins.attrValues coreModules;
+}

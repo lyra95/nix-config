@@ -4,6 +4,12 @@
   inputs = {
     systems.url = "github:nix-systems/default";
 
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
+    # Retained for nvim's flake-utils input.
     flake-utils = {
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
@@ -44,95 +50,15 @@
     };
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    flake-utils,
-    nvim,
-    devshell,
-    pre-commit,
-    ...
-  }:
-    {
-      homeConfigurations = import ./flake-outputs/homeConfigurations inputs;
-      homeManagerModules = import ./flake-outputs/homeManagerModules.nix inputs;
-      nixosConfigurations = import ./flake-outputs/nixosConfigurations inputs;
-      nixosModules = import ./flake-outputs/nixosModules.nix inputs;
-    }
-    // flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      formatter = pkgs.alejandra;
+  outputs = inputs:
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = import inputs.systems;
 
-      checks = {
-        pre-commit = pre-commit.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            alejandra.enable = true;
-            alejandra.package = pkgs.alejandra;
-          };
-        };
-      };
-
-      devShells.default = let
-        mkShell =
-          (import devshell {
-            inherit system;
-            nixpkgs = pkgs;
-          })
-          .mkShell;
-      in
-        mkShell {
-          env = [
-            {
-              name = "FLAKE_ROOT";
-              eval = "$PWD";
-            }
-          ];
-
-          devshell.startup."pre-commit".text = self.checks.${system}.pre-commit.shellHook;
-
-          packages =
-            [
-              pkgs.alejandra
-              nvim.packages."${system}".default
-            ]
-            ++ self.checks.${system}.pre-commit.enabledPackages;
-
-          commands = [
-            {
-              help = "run formatter";
-              name = "fmt";
-              command = ''
-                alejandra "$FLAKE_ROOT"
-              '';
-            }
-            {
-              help = "debug nix expression";
-              name = "debug";
-              command = ''
-                nix repl --extra-experimental-features 'flakes repl-flake' "$FLAKE_ROOT"
-              '';
-            }
-            {
-              help = "home-manager switch";
-              name = "hs";
-              command = "home-manager switch --flake .#$(hostname)";
-              category = "home-manager";
-            }
-            {
-              help = "nixos-rebuild switch";
-              name = "ns";
-              command = "sudo nixos-rebuild switch --flake .#$(hostname)";
-              category = "nixos";
-            }
-            {
-              help = "nixos-rebuild boot";
-              name = "nb";
-              command = "sudo nixos-rebuild boot --flake .#$(hostname)";
-              category = "nixos";
-            }
-          ];
-        };
-    });
+      imports = [
+        ./parts/modules.nix
+        ./parts/nixos.nix
+        ./parts/homes.nix
+        ./parts/dev.nix
+      ];
+    };
 }

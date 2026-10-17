@@ -1,28 +1,21 @@
 {
-  self,
-  home-manager,
-  agenix,
-  nvim,
-  ...
-}: {
+  inputs,
+  inputs',
+  homeModules,
   name,
-  modules,
-  system,
-  pkgs,
-  ...
-}: let
+}: {pkgs, ...}: let
   coreModules = {
-    age = agenix.homeManagerModules.default;
-    importAll = self.homeManagerModules.default;
+    age = inputs.agenix.homeManagerModules.default;
+    importAll = homeModules.default;
     nvim = {
-      nvim.pkg = nvim.packages.${system}.default;
+      nvim.pkg = inputs'.nvim.packages.default;
       nvim.enableBashIntegration = true;
     };
     home = {
       home.username = name;
       home.homeDirectory = "/home/${name}";
       home.packages = [
-        home-manager.packages.${system}.default
+        inputs'.home-manager.packages.default
       ];
 
       home.stateVersion = "24.05";
@@ -119,11 +112,6 @@
       };
     };
   };
-in
-  home-manager.lib.homeManagerConfiguration {
-    inherit pkgs;
-    modules =
-      modules
-      ++ (builtins.attrValues commonModules)
-      ++ (builtins.attrValues coreModules);
-  }
+in {
+  imports = (builtins.attrValues commonModules) ++ (builtins.attrValues coreModules);
+}

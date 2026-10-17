@@ -1,13 +1,9 @@
 {
-  self,
-  nixpkgs,
-  nixos-wsl,
-  ...
-}: {
+  inputs,
+  nixosModules,
   name,
   system,
   userName,
-  modules,
 }: let
   commonModules = {
     nix = {pkgs, ...}: {
@@ -27,9 +23,9 @@
 
     wsl = {
       imports = [
-        nixos-wsl.nixosModules.wsl
-        self.nixosModules.wsl
-        self.nixosModules.bug-fix
+        inputs.nixos-wsl.nixosModules.wsl
+        nixosModules.wsl
+        nixosModules.bug-fix
       ];
       wsl.enable = true;
       wsl.defaultUser = userName;
@@ -74,10 +70,6 @@
       };
     };
   };
-in
-  nixpkgs.lib.nixosSystem {
-    specialArgs = {};
-    modules =
-      modules
-      ++ (builtins.attrValues commonModules);
-  }
+in {
+  imports = builtins.attrValues commonModules;
+}
