@@ -78,7 +78,7 @@
           {
             help = "darwin-rebuild switch";
             name = "ds";
-            command = "sudo darwin-rebuild switch --flake ./darwin#$(hostname)";
+            command = "sudo darwin-rebuild switch --flake .#$(hostname)";
             category = "darwin";
           }
         ];

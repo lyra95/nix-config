@@ -1,7 +1,7 @@
-# system-wide configurations
-inputs @ {
-  nix-darwin,
-  nixpkgs,
+{
+  config,
+  inputs,
+  lib,
   ...
 }: let
   profile = {
@@ -9,13 +9,20 @@ inputs @ {
     hostName = "jo-macbook-air";
     arch = "aarch64-darwin";
   };
-  pkgs = nixpkgs.legacyPackages."${profile.arch}";
 in {
-  darwinConfigurations."${profile.hostName}" = nix-darwin.lib.darwinSystem {
+  perSystem = {system, ...}: {
+    checks =
+      lib.mapAttrs' (name: host:
+        lib.nameValuePair "darwin-${name}" host.system)
+      (lib.filterAttrs (_: host: host.pkgs.stdenv.hostPlatform.system == system)
+        config.flake.darwinConfigurations);
+  };
+
+  flake.darwinConfigurations.${profile.hostName} = inputs.nix-darwin.lib.darwinSystem {
     modules = [
-      (import ./modules/dunno.nix profile inputs)
-      (import ./modules/homebrew profile inputs)
-      {
+      (import ../modules/darwin/system.nix profile inputs)
+      (import ../modules/darwin/homebrew profile inputs)
+      ({pkgs, ...}: {
         networking.hostName = profile.hostName;
 
         fonts.packages = [pkgs.d2coding];
@@ -43,9 +50,9 @@ in {
           AppleShowAllExtensions = true;
           AppleShowAllFiles = true;
         };
-      }
-      (import ./modules/aerospace)
-      (import ./modules/sioyek profile)
+      })
+      ../modules/darwin/aerospace
+      (import ../modules/darwin/sioyek profile)
     ];
   };
 }

@@ -1,5 +1,5 @@
 {
-  description = "NixOS WSL flake";
+  description = "NixOS, nix-darwin and Home Manager configurations";
 
   inputs = {
     systems.url = "github:nix-systems/default";
@@ -10,6 +10,22 @@
     };
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
 
     nixos-wsl = {
       # Track the WSL branch that supports nixos-unstable.
@@ -58,6 +74,7 @@
       imports = [
         ./parts/modules.nix
         ./parts/nixos.nix
+        ./parts/darwin.nix
         ./parts/homes.nix
         ./parts/dev.nix
         ./parts/nvim.nix
