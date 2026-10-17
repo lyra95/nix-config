@@ -30,6 +30,8 @@ in {
         gc-all = "gc -q --prune --aggressive --keep-largest-pack --force";
       };
 
+      settings.push.autoSetupRemote = true;
+
       settings.extraConfig = {
         init.defaultBranch = "main";
         merge.conflictstyle = "diff3";
