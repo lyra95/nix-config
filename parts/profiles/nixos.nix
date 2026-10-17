@@ -30,6 +30,7 @@
     };
 
     system = {
+      documentation.nixos.enable = false;
       networking.hostName = hostName;
       networking.networkmanager.enable = true;
       time.timeZone = "Asia/Seoul";

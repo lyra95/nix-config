@@ -16,13 +16,13 @@
       default = {imports = builtins.attrValues modules;};
     };
 
-  perSystem = {system, ...}: let
-    pkgs = import inputs.nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-    };
+  perSystem = {
+    pkgsUnfree,
+    system,
+    ...
+  }: let
     module = {
-      inherit pkgs;
+      pkgs = pkgsUnfree;
       module = ../modules/nvim;
     };
     nvim = inputs.nixvim.legacyPackages.${system}.makeNixvimWithModule module;
@@ -30,7 +30,7 @@
     packages = {inherit nvim;};
     checks.nvim-package = nvim;
     checks.nvim =
-      (inputs.nixvim.lib.${system}.check.mkTestDerivationFromNixvimModule module).overrideAttrs
+      nvim.config.build.test.overrideAttrs
       (old: {
         # Neo-tree needs its log directory before the first sandboxed launch.
         buildCommand =

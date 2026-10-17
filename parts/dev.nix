@@ -29,7 +29,7 @@
 
       devshell.startup.pre-commit.text = config.pre-commit.shellHook;
       packages =
-        [pkgs.alejandra config.packages.nvim]
+        [pkgs.alejandra]
         ++ config.pre-commit.settings.enabledPackages;
 
       commands =

@@ -71,6 +71,14 @@
     inputs.flake-parts.lib.mkFlake {inherit inputs;} {
       systems = import inputs.systems;
 
+      perSystem = {system, ...}: {
+        # Share the configured package set across Home Manager and Nixvim.
+        _module.args.pkgsUnfree = import inputs.nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
+      };
+
       imports = [
         ./parts/nixos.nix
         ./parts/darwin.nix

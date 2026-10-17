@@ -13,6 +13,9 @@
     ./misc
   ];
 
+  # Skip the generated Nixvim option reference, keeping Neovim's own help.
+  enableMan = false;
+
   folding.enable = true;
   completion.enable = true;
   telescope.enable = true;

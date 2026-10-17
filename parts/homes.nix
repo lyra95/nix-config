@@ -10,15 +10,13 @@
     system,
     stateVersion,
   }: modules:
-    withSystem system (perSystem @ {inputs', ...}: let
-      # Home Manager allows unfree packages; development shells keep their defaults.
-      pkgs = import inputs.nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
-    in
+    withSystem system (perSystem @ {
+      inputs',
+      pkgsUnfree,
+      ...
+    }:
       inputs.home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = pkgsUnfree;
         modules =
           modules
           ++ [

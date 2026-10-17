@@ -65,6 +65,7 @@
       home.sessionPath = ["$HOME/.local/bin"];
 
       programs.home-manager.enable = true;
+      manual.manpages.enable = false;
     };
   };
   commonModules = {

@@ -7,6 +7,7 @@
 }: let
   commonModules = {
     nix = {pkgs, ...}: {
+      documentation.nixos.enable = false;
       nixpkgs.hostPlatform = system;
       nix.settings.experimental-features = [
         "nix-command"
