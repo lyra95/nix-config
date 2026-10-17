@@ -6,7 +6,7 @@ inputs @ {
 }: let
   profile = {
     userName = "95hyouka";
-    hostName = "95hyoukas-MacBook-Air";
+    hostName = "jo-macbook-air";
     arch = "aarch64-darwin";
   };
   pkgs = nixpkgs.legacyPackages."${profile.arch}";
@@ -16,6 +16,8 @@ in {
       (import ./modules/dunno.nix profile inputs)
       (import ./modules/homebrew profile inputs)
       {
+        networking.hostName = profile.hostName;
+
         fonts.packages = [pkgs.d2coding];
 
         environment.systemPackages = [

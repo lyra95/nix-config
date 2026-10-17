@@ -11,9 +11,10 @@
   options.gitui.enable = lib.mkEnableOption "gitui";
 
   config = lib.mkIf config.gitui.enable {
-    home.packages = with pkgs; [
-      wl-clipboard # gitui clipboard dependency
-    ];
+    home.packages = with pkgs;
+      lib.optionals stdenv.hostPlatform.isLinux [
+        wl-clipboard # gitui clipboard dependency
+      ];
 
     programs.gitui = {
       enable = true;

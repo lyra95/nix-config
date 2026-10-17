@@ -4,77 +4,104 @@
   lib,
   withSystem,
   ...
-}: {
-  imports = [inputs.home-manager.flakeModules.default];
-
-  perSystem = {system, ...}: {
-    checks = lib.optionalAttrs (system == "x86_64-linux") (
-      lib.mapAttrs' (name: home:
-        lib.nameValuePair "home-${name}" home.activationPackage)
-      config.flake.homeConfigurations
-    );
-  };
-
-  flake.homeConfigurations = withSystem "x86_64-linux" (perSystem @ {
+}: let
+  mkHome = {
+    name,
     system,
-    inputs',
-    ...
-  }: let
-    # Home Manager allows unfree packages; development shells keep their defaults.
-    pkgs = import inputs.nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-    };
-    mkHome = name: modules:
+    stateVersion,
+  }: modules:
+    withSystem system (perSystem @ {inputs', ...}: let
+      # Home Manager allows unfree packages; development shells keep their defaults.
+      pkgs = import inputs.nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+    in
       inputs.home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules =
           modules
           ++ [
             (import ./profiles/home.nix {
-              inherit inputs inputs' name;
+              inherit inputs inputs' name stateVersion;
               nvimPackage = perSystem.config.packages.nvim;
               inherit (config.flake) homeModules;
             })
           ];
-      };
-    work = mkHome "jo" [
-      {
+      });
+
+  work =
+    mkHome {
+      name = "jo";
+      system = "x86_64-linux";
+      stateVersion = "24.05";
+    } [
+      ({pkgs, ...}: {
         home.packages = [pkgs.stu pkgs.claude-code];
         aws.enable = true;
         git.enable = true;
         git.wsl = true;
         rclone.enable = true;
         kind.enable = true;
-      }
+      })
     ];
-  in {
+in {
+  imports = [inputs.home-manager.flakeModules.default];
+
+  perSystem = {system, ...}: {
+    checks =
+      lib.mapAttrs' (name: home:
+        lib.nameValuePair "home-${name}" home.activationPackage)
+      (lib.filterAttrs (_: home: home.pkgs.stdenv.hostPlatform.system == system)
+        config.flake.homeConfigurations);
+  };
+
+  flake.homeConfigurations = {
     inherit work;
     home = work;
     dell = work;
 
-    jonuc = mkHome "jo" [
-      {
-        aws.enable = false;
-        git.enable = true;
-        home.packages = [pkgs.k9s];
-        programs.bash = {
-          shellAliases.k = "kubectl";
-          sessionVariables.KUBECONFIG = "/etc/rancher/k3s/k3s.yaml";
-        };
-      }
-    ];
+    jo-macbook-air =
+      mkHome {
+        name = "95hyouka";
+        system = "aarch64-darwin";
+        stateVersion = "25.05";
+      } [
+        {git.enable = true;}
+      ];
 
-    container = mkHome "root" [
-      {
-        aws.enable = lib.mkForce false;
-        git.enable = lib.mkForce false;
-        gitui.enable = lib.mkForce false;
-        rclone.enable = lib.mkForce false;
-        kind.enable = lib.mkForce false;
-        k8s.enable = lib.mkForce false;
-        home.homeDirectory = lib.mkForce "/root";
-      }
-    ];
-  });
+    jonuc =
+      mkHome {
+        name = "jo";
+        system = "x86_64-linux";
+        stateVersion = "24.05";
+      } [
+        ({pkgs, ...}: {
+          aws.enable = false;
+          git.enable = true;
+          home.packages = [pkgs.k9s];
+          programs.bash = {
+            shellAliases.k = "kubectl";
+            sessionVariables.KUBECONFIG = "/etc/rancher/k3s/k3s.yaml";
+          };
+        })
+      ];
+
+    container =
+      mkHome {
+        name = "root";
+        system = "x86_64-linux";
+        stateVersion = "24.05";
+      } [
+        {
+          aws.enable = lib.mkForce false;
+          git.enable = lib.mkForce false;
+          gitui.enable = lib.mkForce false;
+          rclone.enable = lib.mkForce false;
+          kind.enable = lib.mkForce false;
+          k8s.enable = lib.mkForce false;
+          home.homeDirectory = lib.mkForce "/root";
+        }
+      ];
+  };
 }

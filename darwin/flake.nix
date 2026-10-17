@@ -46,6 +46,5 @@
     lib.attrsets.mergeAttrsList [
       (import ./flake-outputs/nix-darwin inputs)
       (import ./flake-outputs/devShell inputs)
-      (import ./flake-outputs/home-manager inputs)
     ];
 }
