@@ -1,17 +1,16 @@
 {
-  self,
-  nixpkgs,
-  agenix,
-  ...
-}: {
+  inputs,
+  nixosModules,
   hostName,
-  system,
   defaultUserName,
-  modules,
   pkgs,
 }: let
   coreModules = {
-    age = agenix.nixosModules.age;
+    age = inputs.agenix.nixosModules.age;
+    vscode-server = {
+      imports = [inputs.vscode-server.nixosModules.default];
+      services.vscode-server.enable = true;
+    };
 
     i18n = {
       # Select internationalisation properties.
@@ -31,6 +30,7 @@
     };
 
     system = {
+      documentation.nixos.enable = false;
       networking.hostName = hostName;
       networking.networkmanager.enable = true;
       time.timeZone = "Asia/Seoul";
@@ -69,17 +69,10 @@
 
     importAll = {
       imports = [
-        self.nixosModules.default
+        nixosModules.default
       ];
     };
   };
-in
-  nixpkgs.lib.nixosSystem {
-    specialArgs = {
-      inherit hostName defaultUserName;
-    };
-    inherit system;
-    modules =
-      modules
-      ++ (builtins.attrValues coreModules);
-  }
+in {
+  imports = builtins.attrValues coreModules;
+}

@@ -12,9 +12,21 @@ in {
   };
 
   config = lib.mkIf config.git.enable {
+    assertions = [
+      {
+        assertion = config.age != null;
+        message = "age is not enabled";
+      }
+    ];
+
+    home.packages = with pkgs; [
+      git-lfs
+    ];
+
     # todo: add gpg signing
     programs.git = {
       enable = true;
+      lfs.enable = true;
       settings.user.name = "jo";
       settings.user.email = "95hyouka@gmail.com";
 
@@ -29,6 +41,8 @@ in {
         ig = "!vim \"$(git rev-parse --show-toplevel)/.gitignore\"";
         gc-all = "gc -q --prune --aggressive --keep-largest-pack --force";
       };
+
+      settings.push.autoSetupRemote = true;
 
       settings.extraConfig = {
         init.defaultBranch = "main";

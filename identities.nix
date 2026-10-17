@@ -4,4 +4,5 @@
   dell = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINJSlCdDLrVIKwowSvVEeF2cL5j5og2A/UahY7C/BaWM jo@dell";
   nas-root = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGdHb/Du7guROKocWc0zKre58igNU5M/IBmqIoQNZq3Q root@nixos";
   nas = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPf+yTr/wN+xdQFsUl8iZu5mY1sni7laQRPAITFRCqiF jo@jonuc";
+  darwin = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAUeJ10FEPMsJgH/7an5pY+nVshZ5k+Pe0UQhhnaJUr7 lyra95@shiftup.co.kr";
 }

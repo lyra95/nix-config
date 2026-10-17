@@ -1,19 +1,37 @@
 {
-  description = "NixOS WSL flake";
+  description = "NixOS, nix-darwin and Home Manager configurations";
 
   inputs = {
     systems.url = "github:nix-systems/default";
 
-    flake-utils = {
-      url = "github:numtide/flake-utils";
-      inputs.systems.follows = "systems";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL/release-26.05";
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
+
+    nixos-wsl = {
+      # Track the WSL branch that supports nixos-unstable.
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-compat.follows = "pre-commit/flake-compat";
     };
 
     agenix = {
@@ -26,14 +44,21 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nvim = {
-      url = "github:lyra95/nvim/main";
+    vscode-server = {
+      url = "github:nix-community/nixos-vscode-server";
+      inputs.flake-parts.follows = "flake-parts";
+    };
+
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
       inputs.systems.follows = "systems";
-      inputs.flake-utils.follows = "flake-utils";
     };
 
     devshell = {
       url = "github:numtide/devshell";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     pre-commit = {
@@ -42,95 +67,24 @@
     };
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    flake-utils,
-    nvim,
-    devshell,
-    pre-commit,
-    ...
-  }:
-    {
-      homeConfigurations = import ./flake-outputs/homeConfigurations inputs;
-      homeManagerModules = import ./flake-outputs/homeManagerModules.nix inputs;
-      nixosConfigurations = import ./flake-outputs/nixosConfigurations inputs;
-      nixosModules = import ./flake-outputs/nixosModules.nix inputs;
-    }
-    // flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      formatter = pkgs.alejandra;
+  outputs = inputs:
+    inputs.flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = import inputs.systems;
 
-      checks = {
-        pre-commit = pre-commit.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            alejandra.enable = true;
-            alejandra.package = pkgs.alejandra;
-          };
+      perSystem = {system, ...}: {
+        # Share the configured package set across Home Manager and Nixvim.
+        _module.args.pkgsUnfree = import inputs.nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
         };
       };
 
-      devShells.default = let
-        mkShell =
-          (import devshell {
-            inherit system;
-            nixpkgs = pkgs;
-          })
-          .mkShell;
-      in
-        mkShell {
-          env = [
-            {
-              name = "FLAKE_ROOT";
-              eval = "$PWD";
-            }
-          ];
-
-          devshell.startup."pre-commit".text = self.checks.${system}.pre-commit.shellHook;
-
-          packages =
-            [
-              pkgs.alejandra
-              nvim.packages."${system}".default
-            ]
-            ++ self.checks.${system}.pre-commit.enabledPackages;
-
-          commands = [
-            {
-              help = "run formatter";
-              name = "fmt";
-              command = ''
-                alejandra "$FLAKE_ROOT"
-              '';
-            }
-            {
-              help = "debug nix expression";
-              name = "debug";
-              command = ''
-                nix repl --extra-experimental-features 'flakes repl-flake' "$FLAKE_ROOT"
-              '';
-            }
-            {
-              help = "home-manager switch";
-              name = "hs";
-              command = "home-manager switch --flake .#$(hostname)";
-              category = "home-manager";
-            }
-            {
-              help = "nixos-rebuild switch";
-              name = "ns";
-              command = "sudo nixos-rebuild switch --flake .#$(hostname)";
-              category = "nixos";
-            }
-            {
-              help = "nixos-rebuild boot";
-              name = "nb";
-              command = "sudo nixos-rebuild boot --flake .#$(hostname)";
-              category = "nixos";
-            }
-          ];
-        };
-    });
+      imports = [
+        ./parts/nixos.nix
+        ./parts/darwin.nix
+        ./parts/homes.nix
+        ./parts/dev.nix
+        ./parts/nvim.nix
+      ];
+    };
 }
