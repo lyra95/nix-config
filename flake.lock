@@ -120,13 +120,11 @@
     "ixx": {
       "inputs": {
         "flake-utils": [
-          "nvim",
           "nixvim",
           "nuschtosSearch",
           "flake-utils"
         ],
         "nixpkgs": [
-          "nvim",
           "nixvim",
           "nuschtosSearch",
           "nixpkgs"
@@ -209,8 +207,7 @@
           "flake-parts"
         ],
         "nixpkgs": [
-          "nvim",
-          "nixpkgs"
+          "nixpkgs-nvim"
         ],
         "nuschtosSearch": "nuschtosSearch",
         "systems": [
@@ -238,7 +235,6 @@
         ],
         "ixx": "ixx",
         "nixpkgs": [
-          "nvim",
           "nixvim",
           "nixpkgs"
         ]
@@ -254,35 +250,6 @@
       "original": {
         "owner": "NuschtOS",
         "repo": "search",
-        "type": "github"
-      }
-    },
-    "nvim": {
-      "inputs": {
-        "devshell": [
-          "devshell"
-        ],
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": "nixpkgs_2",
-        "nixvim": "nixvim",
-        "systems": [
-          "systems"
-        ]
-      },
-      "locked": {
-        "lastModified": 1760601476,
-        "narHash": "sha256-fUUxgClLcDca2M0W7D8lI66HKQu3epRfVyGTVDVZXUM=",
-        "owner": "lyra95",
-        "repo": "nvim",
-        "rev": "9a90f8008fa5eb8dba4ea6ecd2ef17fbad825539",
-        "type": "github"
-      },
-      "original": {
-        "owner": "lyra95",
-        "ref": "main",
-        "repo": "nvim",
         "type": "github"
       }
     },
@@ -316,7 +283,8 @@
         "home-manager": "home-manager",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
-        "nvim": "nvim",
+        "nixpkgs-nvim": "nixpkgs_2",
+        "nixvim": "nixvim",
         "pre-commit": "pre-commit",
         "systems": "systems",
         "vscode-server": "vscode-server"

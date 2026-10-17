@@ -2,6 +2,17 @@
 # 2. https://nix-community.github.io/nixvim/user-guide/config-examples.html
 # 3. https://grep.app/
 {
+  imports = [
+    ./folding.nix
+    ./completion.nix
+    ./copilot.nix
+    ./telescope.nix
+    ./neotree.nix
+    ./bufferline.nix
+    ./lsp
+    ./misc
+  ];
+
   folding.enable = true;
   completion.enable = true;
   telescope.enable = true;

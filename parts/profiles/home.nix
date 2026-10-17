@@ -2,13 +2,14 @@
   inputs,
   inputs',
   homeModules,
+  nvimPackage,
   name,
 }: {pkgs, ...}: let
   coreModules = {
     age = inputs.agenix.homeManagerModules.default;
     importAll = homeModules.default;
     nvim = {
-      nvim.pkg = inputs'.nvim.packages.default;
+      nvim.pkg = nvimPackage;
       nvim.enableBashIntegration = true;
     };
     home = {

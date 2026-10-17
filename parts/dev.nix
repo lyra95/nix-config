@@ -6,7 +6,6 @@
 
   perSystem = {
     config,
-    inputs',
     pkgs,
     ...
   }: {
@@ -27,7 +26,7 @@
 
       devshell.startup.pre-commit.text = config.pre-commit.shellHook;
       packages =
-        [pkgs.alejandra inputs'.nvim.packages.default]
+        [pkgs.alejandra config.packages.nvim]
         ++ config.pre-commit.settings.enabledPackages;
 
       commands = [

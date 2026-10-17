@@ -9,7 +9,7 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
-    # Retained for nvim's flake-utils input.
+    # Shared with Nixvim's search documentation input.
     flake-utils = {
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
@@ -39,18 +39,15 @@
       inputs.flake-parts.follows = "flake-parts";
     };
 
-    nvim = {
-      url = "github:lyra95/nvim/main";
+    # This Nixvim version requires packages removed from current nixos-unstable.
+    nixpkgs-nvim.url = "github:NixOS/nixpkgs";
+
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs-nvim";
+      inputs.flake-parts.follows = "flake-parts";
       inputs.systems.follows = "systems";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.devshell.follows = "devshell";
-      # Keep nvim's pinned nixpkgs: its Nixvim version references removed packages
-      # (e.g. lexical) when evaluated with the root nixos-unstable input.
-      inputs.nixvim.inputs = {
-        flake-parts.follows = "flake-parts";
-        systems.follows = "systems";
-        nuschtosSearch.inputs.flake-utils.follows = "flake-utils";
-      };
+      inputs.nuschtosSearch.inputs.flake-utils.follows = "flake-utils";
     };
 
     devshell = {
@@ -73,6 +70,7 @@
         ./parts/nixos.nix
         ./parts/homes.nix
         ./parts/dev.nix
+        ./parts/nvim.nix
       ];
     };
 }

@@ -7,7 +7,7 @@
 }: {
   imports = [inputs.home-manager.flakeModules.default];
 
-  flake.homeConfigurations = withSystem "x86_64-linux" ({
+  flake.homeConfigurations = withSystem "x86_64-linux" (perSystem @ {
     system,
     inputs',
     ...
@@ -25,6 +25,7 @@
           ++ [
             (import ./profiles/home.nix {
               inherit inputs inputs' name;
+              nvimPackage = perSystem.config.packages.nvim;
               inherit (config.flake) homeModules;
             })
           ];
