@@ -48,6 +48,24 @@
 in {
   imports = [inputs.home-manager.flakeModules.default];
 
+  flake.homeModules = {
+    aws = ../modules/home-manager/aws;
+    git = ../modules/home-manager/git;
+    gitui = ../modules/home-manager/gitui;
+    starship = ../modules/home-manager/starship;
+    k8s = ../modules/home-manager/k8s.nix;
+    nvim = ../modules/home-manager/nvim.nix;
+    rclone = ../modules/home-manager/rclone;
+    kind = ../modules/home-manager/kind.nix;
+
+    default = {
+      imports = with config.flake.homeModules; [aws git gitui k8s kind nvim rclone starship];
+    };
+  };
+
+  # Preserve the existing public output alongside Home Manager's homeModules.
+  flake.homeManagerModules = config.flake.homeModules;
+
   perSystem = {system, ...}: {
     checks =
       lib.mapAttrs' (name: home:

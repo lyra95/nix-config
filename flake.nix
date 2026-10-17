@@ -72,7 +72,6 @@
       systems = import inputs.systems;
 
       imports = [
-        ./parts/modules.nix
         ./parts/nixos.nix
         ./parts/darwin.nix
         ./parts/homes.nix

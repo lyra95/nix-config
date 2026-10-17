@@ -7,6 +7,23 @@
 }: let
   inherit (config.flake) nixosModules;
 in {
+  flake.nixosModules = {
+    tailscale = ../modules/nixos/tailscale;
+    xrdp = ../modules/nixos/xrdp;
+    cifs = ../modules/nixos/cifs;
+    k3s = ../modules/nixos/k3s;
+    bug-fix = ../modules/nixos/bug-fix;
+    vscode = ../modules/wsl/vscode.nix;
+    podman = ../modules/wsl/podman.nix;
+
+    default = {
+      imports = with nixosModules; [bug-fix cifs k3s tailscale xrdp];
+    };
+    wsl = {
+      imports = with nixosModules; [podman vscode];
+    };
+  };
+
   perSystem = {system, ...}: {
     checks = lib.optionalAttrs (system == "x86_64-linux") (
       lib.mapAttrs' (name: host:

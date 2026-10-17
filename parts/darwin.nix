@@ -4,12 +4,28 @@
   lib,
   ...
 }: let
+  inherit (config.flake) darwinModules;
   profile = {
     userName = "95hyouka";
     hostName = "jo-macbook-air";
     arch = "aarch64-darwin";
   };
 in {
+  flake.darwinModules = {
+    system =
+      lib.setDefaultModuleLocation ../modules/darwin/system.nix
+      (import ../modules/darwin/system.nix profile inputs);
+    homebrew =
+      lib.setDefaultModuleLocation ../modules/darwin/homebrew/default.nix
+      (import ../modules/darwin/homebrew profile inputs);
+    aerospace = ../modules/darwin/aerospace;
+    sioyek = lib.modules.importApply ../modules/darwin/sioyek/default.nix profile;
+
+    default = {
+      imports = with darwinModules; [system homebrew aerospace sioyek];
+    };
+  };
+
   perSystem = {system, ...}: {
     checks =
       lib.mapAttrs' (name: host:
@@ -20,8 +36,7 @@ in {
 
   flake.darwinConfigurations.${profile.hostName} = inputs.nix-darwin.lib.darwinSystem {
     modules = [
-      (import ../modules/darwin/system.nix profile inputs)
-      (import ../modules/darwin/homebrew profile inputs)
+      darwinModules.default
       ({pkgs, ...}: {
         networking.hostName = profile.hostName;
 
@@ -51,8 +66,6 @@ in {
           AppleShowAllFiles = true;
         };
       })
-      ../modules/darwin/aerospace
-      (import ../modules/darwin/sioyek profile)
     ];
   };
 }
