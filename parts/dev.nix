@@ -23,7 +23,7 @@
       env = [
         {
           name = "FLAKE_ROOT";
-          eval = "$PWD";
+          eval = "$(${pkgs.git}/bin/git rev-parse --show-toplevel)";
         }
       ];
 
@@ -58,6 +58,28 @@
             name = "hs";
             command = "home-manager switch --flake .#$(hostname)";
             category = "home-manager";
+          }
+          {
+            help = "evaluate checks for all systems";
+            name = "ch";
+            command = "nix flake check --no-build --all-systems";
+          }
+          {
+            help = "build checks for the current system";
+            name = "chb";
+            command = "nix flake check";
+          }
+          {
+            help = "profile flake evaluation and generate a flame graph";
+            name = "profile";
+            command = ''
+              nix flake check --no-build --all-systems \
+                --option eval-cache false \
+                --eval-profiler flamegraph \
+                --eval-profile-file nix-eval.profile &&
+                nix shell nixpkgs#flamegraph -c \
+                  flamegraph.pl nix-eval.profile > nix-eval.svg
+            '';
           }
         ]
         ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
