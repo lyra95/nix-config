@@ -1,0 +1,148 @@
+inputs @ {
+  home-manager,
+  agenix,
+  nixpkgs,
+  ...
+}: let
+  pkgs = nixpkgs.legacyPackages."aarch64-darwin";
+  name = "95hyouka";
+  coreModules = {
+    age = {config, ...}: {
+      imports = [agenix.homeManagerModules.default];
+      xdg.enable = true;
+      age.secretsDir = "${config.xdg.cacheHome}/agenix";
+    };
+
+    home = {
+      home.username = name;
+      home.homeDirectory = "/Users/${name}";
+      home.sessionPath = ["$HOME/.local/bin"];
+      home.stateVersion = "25.05";
+    };
+  };
+  commonModules = {
+    misc = {
+      home.packages = with pkgs; [
+        jq
+        yq-go
+        hex
+      ];
+
+      programs.nix-search-tv = {
+        enable = true;
+        settings = {
+          indexes = ["nixpkgs" "home-manager" "nixos"];
+
+          experimental = {
+            render_docs_indexes = {
+              nvf = "https://notashelf.github.io/nvf/options.html";
+            };
+          };
+        };
+      };
+
+      programs.bash = {
+        enable = true;
+        historyControl = ["erasedups" "ignoredups" "ignorespace"];
+        historyIgnore = ["ls" "cd" "exit"];
+        shellAliases = {
+          ns = "nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history";
+          bs = "brew search --eval-all '' | fzf --preview 'brew info {}'";
+          bu = "brew upgrade -g";
+        };
+      };
+
+      programs.starship = {
+        enable = true;
+        enableBashIntegration = true;
+
+        # https://starship.rs/config/
+        settings = {
+          command_timeout = 1000;
+
+          nix_shell = {
+            heuristic = true;
+          };
+        };
+      };
+
+      # file explorer
+      programs.yazi = {
+        enable = true;
+        enableBashIntegration = true;
+        shellWrapperName = "yy";
+      };
+
+      # tmux alternative
+      programs.zellij = {
+        enable = true;
+      };
+
+      programs.direnv = {
+        enable = true;
+        enableBashIntegration = true;
+        nix-direnv.enable = true;
+      };
+
+      # fuzzy finder (bash history, etc)
+      programs.fzf = {
+        enable = true;
+        enableBashIntegration = true;
+      };
+    };
+
+    modern = {
+      home.packages = with pkgs; [
+        bat-extras.batman # modern man
+        delta # modern diff
+      ];
+
+      # modern ls
+      programs.eza = {
+        enable = true;
+        enableBashIntegration = true;
+        git = true;
+        icons = "auto";
+      };
+
+      # modern grep
+      programs.ripgrep.enable = true;
+
+      # modern find
+      programs.fd.enable = true;
+
+      # modern cat
+      programs.bat = {
+        enable = true;
+      };
+
+      programs.bash = {
+        shellAliases = {
+          ls = "eza";
+          ll = "eza -al";
+          cat = "bat";
+          tree = "eza --tree";
+          find = "fd";
+          grep = "rg";
+          man = "batman";
+          diff = "delta";
+        };
+      };
+    };
+  };
+in {
+  homeConfigurations."95hyouka" = home-manager.lib.homeManagerConfiguration {
+    inherit pkgs;
+    modules =
+      [
+        {
+          imports = [
+            ./modules/git
+          ];
+          git.enable = true;
+        }
+      ]
+      ++ (builtins.attrValues commonModules)
+      ++ (builtins.attrValues coreModules);
+  };
+}

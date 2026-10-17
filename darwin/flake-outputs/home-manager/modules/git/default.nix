@@ -1,0 +1,89 @@
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
+  options = {
+    git.enable = lib.mkEnableOption "enable git";
+  };
+
+  config = lib.mkIf config.git.enable {
+    assertions = [
+      {
+        assertion = config.age != null;
+        message = "age is not enabled";
+      }
+    ];
+
+    home.packages = with pkgs; [
+      git-lfs
+    ];
+
+    # todo: add gpg signing
+    programs.git = {
+      lfs.enable = true;
+      enable = true;
+
+      settings = {
+        init.defaultBranch = "main";
+        merge.conflictstyle = "diff3";
+        user.name = "jo";
+        user.email = "lyra95@shiftup.co.kr";
+        alias = {
+          # Prettier `git log`
+          lg = "log --color --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
+          rb = "rebase --interactive";
+          last = "show HEAD";
+          oops = "commit -a --amend --no-edit";
+          fp = "push --force";
+          pu = "!git push --set-upstream origin \"$(git rev-parse --abbrev-ref HEAD)\"";
+          ig = "!vim \"$(git rev-parse --show-toplevel)/.gitignore\"";
+          gc-all = "gc -q --prune --aggressive --keep-largest-pack --force";
+        };
+      };
+    };
+
+    programs.delta = {
+      enable = true;
+      enableGitIntegration = true;
+      options = {
+        navigate = true;
+        line-numbers = true;
+        hyperlinks = true;
+        side-by-side = true;
+        colorMoved = "default";
+      };
+    };
+
+    age.secrets.github_ed25519 = {
+      file = ./github_ed25519.age;
+    };
+
+    programs.ssh = {
+      enable = true;
+      enableDefaultConfig = false;
+      settings = {
+        "*" = {
+          ForwardAgent = false;
+          AddKeysToAgent = "no";
+          Compression = false;
+          ServerAliveInterval = 0;
+          ServerAliveCountMax = 3;
+          HashKnownHosts = false;
+          UserKnownHostsFile = "~/.ssh/known_hosts";
+          ControlMaster = "no";
+          ControlPath = "~/.ssh/master-%r@%n:%p";
+          ControlPersist = "no";
+        };
+
+        "github.com" = {
+          User = "jo";
+          Hostname = "github.com";
+          IdentityFile = "${config.age.secrets.github_ed25519.path}";
+          PreferredAuthentications = "publickey";
+        };
+      };
+    };
+  };
+}
