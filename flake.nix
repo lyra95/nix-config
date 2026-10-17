@@ -26,6 +26,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    vscode-server.url = "github:nix-community/nixos-vscode-server";
+
     nvim = {
       url = "github:lyra95/nvim/main";
       inputs.systems.follows = "systems";

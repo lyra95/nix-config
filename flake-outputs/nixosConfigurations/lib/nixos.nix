@@ -2,6 +2,7 @@
   self,
   nixpkgs,
   agenix,
+  vscode-server,
   ...
 }: {
   hostName,
@@ -12,6 +13,10 @@
 }: let
   coreModules = {
     age = agenix.nixosModules.age;
+    vscode-server = {
+      imports = [vscode-server.nixosModules.default];
+      services.vscode-server.enable = true;
+    };
 
     i18n = {
       # Select internationalisation properties.
