@@ -1,6 +1,13 @@
 profile: {pkgs, ...}: {
   networking.hostName = profile.hostName;
 
+  imports = [./default-apps.nix];
+  defaultApplications = {
+    "public.plain-text" = "com.microsoft.VSCode";
+    "public.source-code" = "com.microsoft.VSCode";
+    "public.data" = "com.microsoft.VSCode";
+  };
+
   fonts.packages = [pkgs.d2coding];
 
   environment.systemPackages = [

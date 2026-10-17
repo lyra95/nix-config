@@ -1,35 +1,10 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: let
-  cfg = config.vscode-remote-workaround;
-in {
-  options.vscode-remote-workaround = {
-    enable = lib.mkEnableOption "automatic VSCode remote server patch";
-    package = lib.mkOption {
-      type = lib.types.package;
-      default = pkgs.nodejs_24;
-      defaultText = lib.literalExpression "pkgs.nodejs_24";
-      description = lib.mdDoc "The Node.js package to use. You generally shouldn't need to override this.";
-    };
-  };
+{vscode-server}: {lib, ...}: {
+  imports = [
+    vscode-server.nixosModules.default
+    (lib.mkAliasOptionModule ["vscode-remote-workaround" "enable"] ["services" "vscode-server" "enable"])
+    (lib.mkAliasOptionModule ["vscode-remote-workaround" "package"] ["services" "vscode-server" "nodejsPackage"])
+  ];
 
-  config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [wget];
-    systemd.user = {
-      paths.vscode-remote-workaround = {
-        wantedBy = ["default.target"];
-        pathConfig.PathChanged = "%h/.vscode-server/bin";
-      };
-
-      services.vscode-remote-workaround.script = ''
-        for i in ~/.vscode-server/bin/*; do
-          echo "Fixing vscode-server in $i..."
-          ln -sf ${cfg.package}/bin/node $i/node
-        done
-      '';
-    };
-  };
+  # The upstream watcher handles both bin/<commit> and cli/servers installations,
+  # and patches their bundled runtime without assuming a compatible Node version.
 }

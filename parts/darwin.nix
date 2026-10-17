@@ -19,7 +19,8 @@ in {
       lib.setDefaultModuleLocation ../modules/darwin/homebrew/default.nix
       (import ../modules/darwin/homebrew profile inputs);
     aerospace = ../modules/darwin/aerospace;
-    sioyek = lib.modules.importApply ../modules/darwin/sioyek/default.nix profile;
+    sioyek = ../modules/darwin/sioyek;
+    default-apps = ../modules/darwin/default-apps.nix;
 
     default = {
       imports = with darwinModules; [system homebrew aerospace sioyek];

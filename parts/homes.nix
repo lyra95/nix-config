@@ -49,7 +49,7 @@ in {
     rclone = ../modules/home-manager/rclone;
     kind = ../modules/home-manager/kind.nix;
 
-    default = ../modules/home-manager;
+    default = lib.modules.importApply ../modules/home-manager/default.nix {inherit (inputs) agenix;};
     shell = ../modules/home-manager/shell.nix;
     modern-cli = ../modules/home-manager/modern-cli.nix;
     darwin = ../modules/home-manager/darwin.nix;

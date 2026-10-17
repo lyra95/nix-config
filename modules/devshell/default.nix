@@ -36,7 +36,7 @@
         help = "debug nix expression";
         name = "debug";
         command = ''
-          nix repl --extra-experimental-features 'flakes repl-flake' "$FLAKE_ROOT"
+          nix repl "$FLAKE_ROOT"
         '';
       }
       {

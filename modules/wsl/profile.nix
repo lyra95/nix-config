@@ -7,7 +7,7 @@
 }: {pkgs, ...}: {
   imports = [
     ../nixos/base.nix
-    ./default.nix
+    (import ./default.nix {inherit (inputs) vscode-server;})
     (import ./user-session.nix {uid = userUid;})
     inputs.nixos-wsl.nixosModules.wsl
   ];

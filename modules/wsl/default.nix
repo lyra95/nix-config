@@ -1,3 +1,6 @@
-{
-  imports = [./podman.nix ./vscode.nix];
+{vscode-server}: {
+  imports = [
+    ./podman.nix
+    (import ./vscode.nix {inherit vscode-server;})
+  ];
 }

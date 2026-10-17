@@ -11,12 +11,12 @@
     cifs = ../modules/nixos/cifs;
     k3s = ../modules/nixos/k3s;
     bug-fix = ../modules/nixos/bug-fix;
-    vscode = ../modules/wsl/vscode.nix;
+    vscode = lib.modules.importApply ../modules/wsl/vscode.nix {inherit (inputs) vscode-server;};
     podman = ../modules/wsl/podman.nix;
 
     default = ../modules/nixos;
     base = ../modules/nixos/base.nix;
-    wsl = ../modules/wsl;
+    wsl = lib.modules.importApply ../modules/wsl/default.nix {inherit (inputs) vscode-server;};
   };
 
   perSystem = {system, ...}: {

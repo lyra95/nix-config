@@ -10,11 +10,10 @@
   ...
 }: {
   imports = [
-    ../default.nix
+    (import ../default.nix {inherit (inputs) agenix;})
     ../shell.nix
     ../modern-cli.nix
     ../darwin.nix
-    (import ../agenix.nix {inherit (inputs) agenix;})
   ];
   nvim.pkg = nvimPackage;
   nvim.enableBashIntegration = true;
