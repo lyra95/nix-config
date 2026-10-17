@@ -18,7 +18,8 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL/release-26.05";
+      # Track the WSL branch that supports nixos-unstable.
+      url = "github:nix-community/NixOS-WSL/main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
