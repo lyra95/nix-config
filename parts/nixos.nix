@@ -4,9 +4,7 @@
   lib,
   withSystem,
   ...
-}: let
-  inherit (config.flake) nixosModules;
-in {
+}: {
   flake.nixosModules = {
     tailscale = ../modules/nixos/tailscale;
     xrdp = ../modules/nixos/xrdp;
@@ -16,19 +14,16 @@ in {
     vscode = ../modules/wsl/vscode.nix;
     podman = ../modules/wsl/podman.nix;
 
-    default = {
-      imports = with nixosModules; [bug-fix cifs k3s tailscale xrdp];
-    };
-    wsl = {
-      imports = with nixosModules; [podman vscode];
-    };
+    default = ../modules/nixos;
+    base = ../modules/nixos/base.nix;
+    wsl = ../modules/wsl;
   };
 
   perSystem = {system, ...}: {
-    checks = lib.optionalAttrs (system == "x86_64-linux") (
+    checks = (
       lib.mapAttrs' (name: host:
         lib.nameValuePair "nixos-${name}" host.config.system.build.toplevel)
-      config.flake.nixosConfigurations
+      (lib.filterAttrs (_: host: host.pkgs.stdenv.hostPlatform.system == system) config.flake.nixosConfigurations)
     );
   };
 
@@ -36,23 +31,15 @@ in {
     lib.genAttrs ["home" "dell" "work"] (name:
       inputs.nixpkgs.lib.nixosSystem {
         modules = [
-          {
-            wsl.docker-desktop.enable = false;
-            system.stateVersion = "23.11";
-          }
           (import ../modules/wsl/profile.nix {
-            inherit inputs nixosModules name;
+            inherit inputs name;
             system = "x86_64-linux";
             userName = "jo";
           })
         ];
       })
     // {
-      jonuc = withSystem "x86_64-linux" ({
-        pkgs,
-        system,
-        ...
-      }: let
+      jonuc = withSystem "x86_64-linux" ({system, ...}: let
         hostName = "jonuc";
         defaultUserName = "jo";
       in
@@ -62,7 +49,7 @@ in {
           modules = [
             ../machines/nuc
             (import ../modules/nixos/profiles/default.nix {
-              inherit inputs nixosModules pkgs hostName defaultUserName;
+              inherit inputs hostName defaultUserName;
             })
           ];
         });

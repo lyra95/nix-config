@@ -34,14 +34,7 @@
       system = "x86_64-linux";
       stateVersion = "24.05";
     } [
-      ({pkgs, ...}: {
-        home.packages = [pkgs.stu pkgs.claude-code];
-        aws.enable = true;
-        git.enable = true;
-        git.wsl = true;
-        rclone.enable = true;
-        kind.enable = true;
-      })
+      ../modules/home-manager/profiles/work.nix
     ];
 in {
   imports = [inputs.home-manager.flakeModules.default];
@@ -93,15 +86,7 @@ in {
         system = "x86_64-linux";
         stateVersion = "24.05";
       } [
-        ({pkgs, ...}: {
-          aws.enable = false;
-          git.enable = true;
-          home.packages = [pkgs.k9s];
-          programs.bash = {
-            shellAliases.k = "kubectl";
-            sessionVariables.KUBECONFIG = "/etc/rancher/k3s/k3s.yaml";
-          };
-        })
+        ../modules/home-manager/profiles/k3s.nix
       ];
 
     container =
@@ -110,15 +95,7 @@ in {
         system = "x86_64-linux";
         stateVersion = "24.05";
       } [
-        {
-          aws.enable = lib.mkForce false;
-          git.enable = lib.mkForce false;
-          gitui.enable = lib.mkForce false;
-          rclone.enable = lib.mkForce false;
-          kind.enable = lib.mkForce false;
-          k8s.enable = lib.mkForce false;
-          home.homeDirectory = lib.mkForce "/root";
-        }
+        ../modules/home-manager/profiles/container.nix
       ];
   };
 }

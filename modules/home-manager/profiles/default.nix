@@ -4,7 +4,11 @@
   nvimPackage,
   name,
   stateVersion,
-}: {pkgs, ...}: {
+}: {
+  lib,
+  pkgs,
+  ...
+}: {
   imports = [
     ../default.nix
     ../shell.nix
@@ -15,10 +19,11 @@
   nvim.pkg = nvimPackage;
   nvim.enableBashIntegration = true;
   home.username = name;
-  home.homeDirectory =
+  home.homeDirectory = lib.mkDefault (
     if pkgs.stdenv.hostPlatform.isDarwin
     then "/Users/${name}"
-    else "/home/${name}";
+    else "/home/${name}"
+  );
   home.packages = [homeManagerPackage];
   home.stateVersion = stateVersion;
   home.sessionPath = ["$HOME/.local/bin"];

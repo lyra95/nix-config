@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   home.packages = with pkgs; [
     jq
     yq-go
@@ -10,8 +14,8 @@
     enable = true;
     enableBashIntegration = true;
   };
-  k8s.enable = true;
-  gitui.enable = true;
+  k8s.enable = lib.mkDefault true;
+  gitui.enable = lib.mkDefault true;
 
   programs.nix-search-tv = {
     enable = true;

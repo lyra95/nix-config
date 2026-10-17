@@ -1,76 +1,39 @@
 {
   inputs,
-  nixosModules,
   name,
   system,
   userName,
-}: let
-  commonModules = {
-    nix = {pkgs, ...}: {
-      documentation.nixos.enable = false;
-      nixpkgs.hostPlatform = system;
-      nix.settings.experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
+  userUid ? 1001,
+}: {pkgs, ...}: {
+  imports = [
+    ../nixos/base.nix
+    ./default.nix
+    (import ./user-session.nix {uid = userUid;})
+    inputs.nixos-wsl.nixosModules.wsl
+  ];
 
-      nixpkgs.config.allowUnfree = true;
+  nixpkgs.hostPlatform = system;
+  nixpkgs.config.allowUnfree = true;
+  environment.systemPackages = [pkgs.file];
 
-      bug-fix.fix-logind-race-condition = true;
-
-      environment.systemPackages = with pkgs; [git vim file];
-      environment.variables.EDITOR = "vim";
-    };
-
-    wsl = {
-      imports = [
-        inputs.nixos-wsl.nixosModules.wsl
-        nixosModules.wsl
-        nixosModules.bug-fix
-      ];
-      wsl.enable = true;
-      wsl.defaultUser = userName;
-      wsl.wslConf.network.hostname = name;
-      wsl.wslConf.boot.initTimeout = 60000;
-
-      # WSL2 runs every distro in one shared cgroup v2 hierarchy, so the
-      # `user.slice/user-$UID.slice/user@$UID.service` cgroup is contested
-      # between distros. podman-machine-default's default user is uid 1000 with
-      # linger enabled, so whenever it boots first it turns that cgroup into a
-      # populated parent and our systemd can no longer attach to it:
-      #
-      #   user@1000.service: Failed to spawn executor: Device or resource busy
-      #
-      # which takes down every `systemd --user` unit (agenix, home-manager).
-      # Moving off uid 1000 gives us an uncontested cgroup path.
-      # Fixed upstream in WSL 2.9.8 by https://github.com/microsoft/WSL/pull/40519.
-      #
-      # NOTE: this is declarative only for a *fresh* install. NixOS refuses to
-      # apply a uid change to an already-existing user (update-users-groups.pl
-      # only warns "not applying UID change"), so an existing machine needs a
-      # one-time `usermod -u 1001 jo` plus a chown of jo-owned paths outside
-      # /home/jo before this value takes effect.
-      users.users.${userName}.uid = 1001;
-      # Must track the uid above, otherwise the Windows drives stay owned by the
-      # now-nonexistent uid 1000 (NixOS-WSL defaults to "metadata,uid=1000,gid=100").
-      wsl.wslConf.automount.options = "metadata,uid=1001,gid=100";
-
-      vscode-remote-workaround.enable = true;
-
-      programs.bash.interactiveShellInit = ''
-        function open {
-          explorer.exe `wslpath -w "$1"`
-        }
-      '';
-    };
-
-    container = {
-      podman = {
-        enable = true;
-        user = userName;
-      };
-    };
+  wsl = {
+    enable = true;
+    defaultUser = userName;
+    docker-desktop.enable = false;
+    wslConf.network.hostname = name;
+    wslConf.boot.initTimeout = 60000;
   };
-in {
-  imports = builtins.attrValues commonModules;
+  system.stateVersion = "23.11";
+
+  vscode-remote-workaround.enable = true;
+  podman = {
+    enable = true;
+    user = userName;
+  };
+
+  programs.bash.interactiveShellInit = ''
+    function open {
+      explorer.exe "$(wslpath -w "$1")"
+    }
+  '';
 }
