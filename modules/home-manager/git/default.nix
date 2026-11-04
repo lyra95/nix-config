@@ -3,24 +3,16 @@
   lib,
   pkgs,
   ...
-}: let
-  ageEnabled = config.age != null;
-in {
+}: {
   options = {
     git.enable = lib.mkEnableOption "enable git";
     git.wsl = lib.mkEnableOption "use git.exe instead of git in symlinked repo";
   };
 
   config = lib.mkIf config.git.enable {
-    assertions = [
-      {
-        assertion = config.age != null;
-        message = "age is not enabled";
-      }
-    ];
-
     home.packages = with pkgs; [
       git-lfs
+      gh
     ];
 
     # todo: add gpg signing
@@ -77,22 +69,5 @@ in {
         fi
       '';
     });
-
-    age.secrets.github_ed25519 = lib.mkIf ageEnabled {
-      file = ./github_ed25519.age;
-    };
-
-    programs.ssh = lib.mkIf ageEnabled {
-      enable = true;
-      enableDefaultConfig = false;
-      settings = {
-        "github.com" = {
-          User = "jo";
-          Hostname = "github.com";
-          IdentityFile = "${config.age.secrets.github_ed25519.path}";
-          PreferredAuthentications = "publickey";
-        };
-      };
-    };
   };
 }
