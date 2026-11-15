@@ -3,3 +3,4 @@ result/
 .pre-commit-config.yaml
 /nix-eval.profile
 /nix-eval.svg
+result
