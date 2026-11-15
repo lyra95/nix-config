@@ -22,7 +22,7 @@
       settings.user.name = "jo";
       settings.user.email = "95hyouka@gmail.com";
 
-      settings.aliases = {
+      settings.alias = {
         # Prettier `git log`
         lg = "log --color --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
         rb = "rebase --interactive";
