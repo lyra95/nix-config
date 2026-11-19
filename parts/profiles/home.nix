@@ -35,7 +35,7 @@
     homebrew = {
       programs.bash.shellAliases = {
         bs = "brew search --eval-all '' | fzf --preview 'brew info {}'";
-        bu = "brew upgrade -g";
+        bu = "brew upgrade";
       };
     };
   };
