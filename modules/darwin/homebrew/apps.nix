@@ -21,7 +21,6 @@
         "obsidian"
         "cloudflare-warp"
         "spotify"
-        "libreoffice"
         "anki"
         "discord"
         "claude-code"
